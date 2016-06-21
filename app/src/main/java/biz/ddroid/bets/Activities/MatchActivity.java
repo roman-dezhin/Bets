@@ -1,7 +1,9 @@
-package biz.ddroid.bets;
+package biz.ddroid.bets.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import biz.ddroid.bets.R;
 
 public class MatchActivity extends AppCompatActivity {
 

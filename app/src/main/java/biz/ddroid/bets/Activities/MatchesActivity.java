@@ -1,4 +1,4 @@
-package biz.ddroid.bets;
+package biz.ddroid.bets.Activities;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,8 +23,9 @@ import java.util.List;
 import biz.ddroid.bets.Fragments.TodayMatchesFragment;
 import biz.ddroid.bets.Fragments.TomorrowMatchesFragment;
 import biz.ddroid.bets.Fragments.YesterdayMatchesFragment;
+import biz.ddroid.bets.R;
 
-public class MainActivity extends AppCompatActivity
+public class MatchesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, YesterdayMatchesFragment.OnFragmentInteractionListener, TodayMatchesFragment.OnFragmentInteractionListener, TomorrowMatchesFragment.OnFragmentInteractionListener {
 
     @Override
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        Toast.makeText(MainActivity.this, uri.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(MatchesActivity.this, uri.toString(), Toast.LENGTH_SHORT).show();
     }
 
     static class Adapter extends FragmentPagerAdapter {
