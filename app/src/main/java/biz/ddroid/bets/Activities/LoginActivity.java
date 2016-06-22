@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.util.regex.Pattern;
+
 import biz.ddroid.bets.R;
 
 /**
@@ -31,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private UserLoginTask mAuthTask = null;
 
     // UI references.
+    private EditText mUsernameView;
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -41,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        mUsernameView = (EditText) findViewById(R.id.username);
         mEmailView = (EditText) findViewById(R.id.email);
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -78,15 +82,27 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Reset errors.
+        mUsernameView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
+        String username = mUsernameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
+
+        if (TextUtils.isEmpty(username)) {
+            mUsernameView.setError(getString(R.string.error_field_required));
+            focusView = mUsernameView;
+            cancel = true;
+        } else if (!isUsernameValid(username)) {
+            mUsernameView.setError(getString(R.string.error_invalid_username));
+            focusView = mUsernameView;
+            cancel = true;
+        }
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
@@ -114,9 +130,13 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(username, email, password);
             mAuthTask.execute((Void) null);
         }
+    }
+
+    private  boolean isUsernameValid(String username) {
+        return Pattern.matches("[\\w]+", username);
     }
 
     private boolean isEmailValid(String email) {
@@ -170,10 +190,12 @@ public class LoginActivity extends AppCompatActivity {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String mUsername;
         private final String mEmail;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String username, String email, String password) {
+            mUsername = username;
             mEmail = email;
             mPassword = password;
         }
