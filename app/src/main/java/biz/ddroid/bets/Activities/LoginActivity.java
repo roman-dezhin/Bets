@@ -3,6 +3,7 @@ package biz.ddroid.bets.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -222,7 +223,8 @@ public class LoginActivity extends AppCompatActivity {
 
             if (success) {
                 Toast.makeText(getApplicationContext(), "Well done", Toast.LENGTH_LONG).show();
-
+                Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
+                startActivity(intent);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
