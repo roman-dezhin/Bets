@@ -5,10 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,27 +18,35 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.regex.Pattern;
 
 import biz.ddroid.bets.R;
+import biz.ddroid.bets.Rest.ServicesClient;
+import biz.ddroid.bets.Rest.UserServices;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity {
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
+    private ServicesClient servicesClient;
+    private UserServices userServices;
+    String url = "http://dev.ddroid.biz";
+    String apiEndpoint = "bets-api-json";
     // UI references.
     private EditText mUsernameView;
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +78,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        servicesClient = new ServicesClient(url, apiEndpoint);
+        userServices = new UserServices(servicesClient);
     }
 
     /**
@@ -78,10 +89,6 @@ public class LoginActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Reset errors.
         mUsernameView.setError(null);
         mEmailView.setError(null);
@@ -124,16 +131,128 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(username, email, password);
-            mAuthTask.execute((Void) null);
+            isUserExist(username, email, password);
         }
+    }
+
+    private void isUserExist(final String username, final String email, final String password) {
+        showProgress(true);
+
+        userServices.isUserExist(username, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Log.v(TAG, response.toString());
+                if (response.length() > 0) {
+                    login(username, password);
+                } else {
+                    register(username, email, password);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
+                Log.v(TAG, error.getMessage());
+                Log.v(TAG, response);
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable error, JSONArray response) {
+                Log.v(TAG, error.getMessage());
+                Log.v(TAG, response.toString());
+
+            }
+
+            @Override
+            public void onFinish() {
+                showProgress(false);
+            }
+        });
+    }
+
+    private void register(String username, String email, String password) {
+        showProgress(true);
+
+        userServices.register(username, password, email, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.v(TAG, response.toString());
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable error, JSONObject response) {
+                Log.v(TAG, error.getMessage());
+                Log.v(TAG, response.toString());
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable error, JSONArray response) {
+                Log.v(TAG, error.getMessage());
+                Log.v(TAG, response.toString());
+
+            }
+
+            @Override
+            public void onFinish() {
+                showProgress(false);
+            }
+        });
+    }
+
+    private void login(String username, String password) {
+        showProgress(true);
+
+        userServices.login(username, password, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.v(TAG, response.toString());
+                String session_name = "";
+                String session_id = "";
+                String token = "";
+                try {
+                    session_name = response.getString("session_name");
+                    session_id = response.getString("sessid");
+                    token = response.getString("token");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "json response: ", e);
+                }
+                Log.v(TAG, "Session_name: " + session_name);
+                Log.v(TAG, "Session_id: " + session_id);
+                Log.v(TAG, "token: " + token);
+
+                if (!token.isEmpty()) {
+                    servicesClient.setToken(token);
+
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable error, JSONObject response) {
+                Log.v(TAG, error.getMessage());
+                Log.v(TAG, response.toString());
+                mPasswordView.setError(response.toString());
+                mPasswordView.requestFocus();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable error, JSONArray response) {
+                Log.v(TAG, error.getMessage());
+                Log.v(TAG, response.toString());
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+            }
+
+            @Override
+            public void onFinish() {
+                showProgress(false);
+            }
+        });
     }
 
     private  boolean isUsernameValid(String username) {
@@ -184,43 +303,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mUsername;
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String username, String email, String password) {
-            mUsername = username;
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
+    /*
             if (success) {
                 Toast.makeText(getApplicationContext(), "Well done", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
@@ -229,13 +312,6 @@ public class LoginActivity extends AppCompatActivity {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
+     */
 }
 
