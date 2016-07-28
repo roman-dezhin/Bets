@@ -27,6 +27,10 @@ import biz.ddroid.bets.R;
 
 public class MatchesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, YesterdayMatchesFragment.OnFragmentInteractionListener, TodayMatchesFragment.OnFragmentInteractionListener, TomorrowMatchesFragment.OnFragmentInteractionListener {
+    String username;
+    String password;
+    String email;
+    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,11 @@ public class MatchesActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        token = getIntent().getExtras().getString("token");
+        username = getIntent().getExtras().getString("username");
+        password = getIntent().getExtras().getString("password");
+        email = getIntent().getExtras().getString("email");
 
         // Setting ViewPager for each Tabs
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);

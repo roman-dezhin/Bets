@@ -16,7 +16,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -38,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private ServicesClient servicesClient;
     private UserServices userServices;
     String url = "http://dev.ddroid.biz";
-    String apiEndpoint = "bets-api-json";
+    String apiEndpoint = "predicts-api-json";
     // UI references.
     private EditText mUsernameView;
     private EditText mEmailView;
@@ -131,7 +130,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (cancel) {
-
             focusView.requestFocus();
         } else {
             isUserExist(username, email, password);
@@ -173,14 +171,23 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void register(String username, String email, String password) {
+    private void register(final String username, final String email, final String password) {
         showProgress(true);
 
         userServices.register(username, password, email, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.v(TAG, response.toString());
-
+                Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
+                try {
+                    intent.putExtra("token", response.getString("token"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                intent.putExtra("username", username);
+                intent.putExtra("password", password);
+                intent.putExtra("email", email);
+                startActivity(intent);
             }
 
             @Override
@@ -204,7 +211,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void login(String username, String password) {
+    private void login(final String username, final String password) {
         showProgress(true);
 
         userServices.login(username, password, new JsonHttpResponseHandler() {
@@ -213,8 +220,10 @@ public class LoginActivity extends AppCompatActivity {
                 Log.v(TAG, response.toString());
                 String session_name = "";
                 String session_id = "";
+                String email = "";
                 String token = "";
                 try {
+                    email = response.getJSONObject("user").getString("mail");
                     session_name = response.getString("session_name");
                     session_id = response.getString("sessid");
                     token = response.getString("token");
@@ -224,11 +233,17 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 Log.v(TAG, "Session_name: " + session_name);
                 Log.v(TAG, "Session_id: " + session_id);
+                Log.v(TAG, "Email: " + email);
                 Log.v(TAG, "token: " + token);
 
                 if (!token.isEmpty()) {
                     servicesClient.setToken(token);
-
+                    Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
+                    intent.putExtra("token", token);
+                    intent.putExtra("username", username);
+                    intent.putExtra("password", password);
+                    intent.putExtra("email", email);
+                    startActivity(intent);
                 }
             }
 
