@@ -178,16 +178,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.v(TAG, response.toString());
-                Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
-                try {
-                    intent.putExtra("token", response.getString("token"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                intent.putExtra("username", username);
-                intent.putExtra("password", password);
-                intent.putExtra("email", email);
-                startActivity(intent);
+                login(username, password);
             }
 
             @Override
@@ -251,6 +242,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable error, JSONObject response) {
                 Log.v(TAG, error.getMessage());
                 Log.v(TAG, response.toString());
+                Log.v(TAG, "login: " + username + " pas: " + password);
                 mPasswordView.setError(response.toString());
                 mPasswordView.requestFocus();
             }
@@ -259,6 +251,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable error, JSONArray response) {
                 Log.v(TAG, error.getMessage());
                 Log.v(TAG, response.toString());
+                Log.v(TAG, "login: " + username + " pas: " + password);
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
