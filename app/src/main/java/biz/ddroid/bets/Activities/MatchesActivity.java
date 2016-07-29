@@ -111,6 +111,7 @@ public class MatchesActivity extends AppCompatActivity
             return mFragmentTitleList.get(position);
         }
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

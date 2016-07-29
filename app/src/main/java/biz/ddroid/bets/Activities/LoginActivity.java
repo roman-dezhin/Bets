@@ -30,14 +30,15 @@ import java.util.regex.Pattern;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.Rest.ServicesClient;
 import biz.ddroid.bets.Rest.UserServices;
+import biz.ddroid.bets.Utils.NetworkConstants;
 import biz.ddroid.bets.Utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 public class LoginActivity extends AppCompatActivity {
     private ServicesClient servicesClient;
     private UserServices userServices;
-    String url = "http://dev.ddroid.biz";
-    String apiEndpoint = "predicts-api-json";
+    String url = NetworkConstants.SERVER_ADDRESS;
+    String apiEndpoint = NetworkConstants.API_ENDPOINT;
     // UI references.
     private EditText mUsernameView;
     private EditText mEmailView;
