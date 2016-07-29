@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -59,6 +61,12 @@ public class MatchesActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View header = navigationView.getHeaderView(0);
+        TextView header_user_name = (TextView) header.findViewById(R.id.header_username);
+        if (header_user_name != null) header_user_name.setText(username);
+        TextView header_user_email = (TextView) header.findViewById(R.id.header_user_email);
+        if (header_user_email != null) header_user_email.setText(email);
     }
 
     // Add Fragments to Tabs
