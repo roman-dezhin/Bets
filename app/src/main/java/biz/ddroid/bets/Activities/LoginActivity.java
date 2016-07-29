@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,11 +24,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.regex.Pattern;
 
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.Rest.ServicesClient;
 import biz.ddroid.bets.Rest.UserServices;
+import biz.ddroid.bets.Utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -50,7 +54,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        checkIfUserCredentialsIsExists();
+
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mUsernameView = (EditText) findViewById(R.id.username);
         mEmailView = (EditText) findViewById(R.id.email);
@@ -80,6 +88,23 @@ public class LoginActivity extends AppCompatActivity {
 
         servicesClient = new ServicesClient(url, apiEndpoint);
         userServices = new UserServices(servicesClient);
+    }
+
+    private void checkIfUserCredentialsIsExists() {
+        SharedPreferences settings = getSharedPreferences(SharedPrefs.PREFS_NAME, 0);
+        String username = settings.getString(SharedPrefs.USERNAME, "");
+        String password = settings.getString(SharedPrefs.PASSWORD, "");
+        String token = settings.getString(SharedPrefs.TOKEN, "");
+        String email = settings.getString(SharedPrefs.EMAIL, "");
+        if (!username.isEmpty() && !password.isEmpty() && !token.isEmpty() && !email.isEmpty()) {
+            Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
+            intent.putExtra("token", token);
+            intent.putExtra("username", username);
+            intent.putExtra("password", password);
+            intent.putExtra("email", email);
+            startActivity(intent);
+            finish();
+        }
     }
 
     /**
@@ -118,17 +143,6 @@ public class LoginActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
         if (cancel) {
             focusView.requestFocus();
         } else {
@@ -154,14 +168,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, String response, Throwable error) {
                 Log.v(TAG, error.getMessage());
                 Log.v(TAG, response);
-
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable error, JSONArray response) {
                 Log.v(TAG, error.getMessage());
                 Log.v(TAG, response.toString());
-
             }
 
             @Override
@@ -172,39 +184,52 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void register(final String username, final String email, final String password) {
-        showProgress(true);
+        if (TextUtils.isEmpty(email)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            mEmailView.requestFocus();
+        } else if (!isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            mEmailView.requestFocus();
+        } else {
+            showProgress(true);
+            userServices.register(username, password, email, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    Log.v(TAG, response.toString());
+                    login(username, password);
+                }
 
-        userServices.register(username, password, email, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.v(TAG, response.toString());
-                login(username, password);
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable error, JSONObject response) {
+                    Log.v(TAG, error.getMessage());
+                    Log.v(TAG, response.toString());
+                    String str = "";
+                    try {
+                        str = new String(error.getMessage().getBytes("ISO-8859-1"), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    mEmailView.setError(str);
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable error, JSONObject response) {
-                Log.v(TAG, error.getMessage());
-                Log.v(TAG, response.toString());
+                    mEmailView.requestFocus();
+                }
 
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable error, JSONArray response) {
+                    Log.v(TAG, error.getMessage());
+                    Log.v(TAG, response.toString());
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable error, JSONArray response) {
-                Log.v(TAG, error.getMessage());
-                Log.v(TAG, response.toString());
-
-            }
-
-            @Override
-            public void onFinish() {
-                showProgress(false);
-            }
-        });
+                @Override
+                public void onFinish() {
+                    showProgress(false);
+                }
+            });
+        }
     }
 
     private void login(final String username, final String password) {
         showProgress(true);
-
         userServices.login(username, password, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -228,13 +253,21 @@ public class LoginActivity extends AppCompatActivity {
                 Log.v(TAG, "token: " + token);
 
                 if (!token.isEmpty()) {
-                    servicesClient.setToken(token);
+                    SharedPreferences settings = getSharedPreferences(SharedPrefs.PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString(SharedPrefs.USERNAME, username);
+                    editor.putString(SharedPrefs.EMAIL, email);
+                    editor.putString(SharedPrefs.PASSWORD, password);
+                    editor.putString(SharedPrefs.TOKEN, token);
+                    editor.commit();
+
                     Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
                     intent.putExtra("token", token);
                     intent.putExtra("username", username);
                     intent.putExtra("password", password);
                     intent.putExtra("email", email);
                     startActivity(intent);
+                    finish();
                 }
             }
 
@@ -263,7 +296,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private  boolean isUsernameValid(String username) {
+    private boolean isUsernameValid(String username) {
         return Pattern.matches("[\\w]+", username);
     }
 
@@ -311,15 +344,5 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /*
-            if (success) {
-                Toast.makeText(getApplicationContext(), "Well done", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
-                startActivity(intent);
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-     */
 }
 
