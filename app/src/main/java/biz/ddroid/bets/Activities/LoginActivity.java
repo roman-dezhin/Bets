@@ -25,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.regex.Pattern;
 
 import biz.ddroid.bets.R;
@@ -34,9 +33,6 @@ import biz.ddroid.bets.Rest.UserServices;
 import biz.ddroid.bets.Utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
-/**
- * A login screen that offers login via email/password.
- */
 public class LoginActivity extends AppCompatActivity {
     private ServicesClient servicesClient;
     private UserServices userServices;
