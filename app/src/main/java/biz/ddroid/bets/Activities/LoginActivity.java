@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         String token = settings.getString(SharedPrefs.TOKEN, "");
         String email = settings.getString(SharedPrefs.EMAIL, "");
         if (!username.isEmpty() && !password.isEmpty() && !token.isEmpty() && !email.isEmpty()) {
-            Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
+            Intent intent = new Intent(getApplicationContext(), BetsActivity.class);
             intent.putExtra("token", token);
             intent.putExtra("username", username);
             intent.putExtra("password", password);
@@ -258,7 +258,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(SharedPrefs.TOKEN, token);
                     editor.commit();
 
-                    Intent intent = new Intent(getApplicationContext(), MatchesActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), BetsActivity.class);
                     intent.putExtra("token", token);
                     intent.putExtra("username", username);
                     intent.putExtra("password", password);

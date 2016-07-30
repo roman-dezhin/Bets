@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Activities.MatchesActivity"
+            android:name=".Activities.BetsActivity"
             android:label="@string/title_matches_activity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

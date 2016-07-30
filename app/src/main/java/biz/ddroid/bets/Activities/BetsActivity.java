@@ -27,7 +27,7 @@ import biz.ddroid.bets.Fragments.TomorrowMatchesFragment;
 import biz.ddroid.bets.Fragments.YesterdayMatchesFragment;
 import biz.ddroid.bets.R;
 
-public class MatchesActivity extends AppCompatActivity
+public class BetsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, YesterdayMatchesFragment.OnFragmentInteractionListener, TodayMatchesFragment.OnFragmentInteractionListener, TomorrowMatchesFragment.OnFragmentInteractionListener {
     String username;
     String password;
@@ -80,7 +80,7 @@ public class MatchesActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        Toast.makeText(MatchesActivity.this, uri.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(BetsActivity.this, uri.toString(), Toast.LENGTH_SHORT).show();
     }
 
     static class Adapter extends FragmentPagerAdapter {
