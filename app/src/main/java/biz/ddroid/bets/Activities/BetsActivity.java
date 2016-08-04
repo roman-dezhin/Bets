@@ -1,6 +1,5 @@
-package biz.ddroid.bets.Activities;
+package biz.ddroid.bets.activities;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -22,17 +21,19 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import biz.ddroid.bets.Fragments.TodayMatchesFragment;
-import biz.ddroid.bets.Fragments.TomorrowMatchesFragment;
-import biz.ddroid.bets.Fragments.YesterdayMatchesFragment;
+import biz.ddroid.bets.fragments.CompletedPredictionsFragment;
+import biz.ddroid.bets.fragments.NewPredictionsFragment;
 import biz.ddroid.bets.R;
+import biz.ddroid.bets.fragments.PendingPredictionsFragment;
 
 public class BetsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, YesterdayMatchesFragment.OnFragmentInteractionListener, TodayMatchesFragment.OnFragmentInteractionListener, TomorrowMatchesFragment.OnFragmentInteractionListener {
-    String username;
-    String password;
-    String email;
-    String token;
+        implements NavigationView.OnNavigationItemSelectedListener, NewPredictionsFragment.OnFragmentInteractionListener,
+        PendingPredictionsFragment.OnFragmentInteractionListener, CompletedPredictionsFragment.OnFragmentInteractionListener {
+    private String username;
+    private String password;
+    private String email;
+    private String token;
+    private String uId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class BetsActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        uId = getIntent().getExtras().getString("uid");
         token = getIntent().getExtras().getString("token");
         username = getIntent().getExtras().getString("username");
         password = getIntent().getExtras().getString("password");
@@ -72,15 +74,15 @@ public class BetsActivity extends AppCompatActivity
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new YesterdayMatchesFragment(), "Yesterday");
-        adapter.addFragment(new TodayMatchesFragment(), "Today");
-        adapter.addFragment(new TomorrowMatchesFragment(), "Tomorrow");
+        adapter.addFragment(NewPredictionsFragment.newInstance(NewPredictionsFragment.TAB_NEW), getString(R.string.tab_matches_new));
+        adapter.addFragment(PendingPredictionsFragment.newInstance(PendingPredictionsFragment.TAB_PENDING), getString(R.string.tab_matches_pending));
+        adapter.addFragment(CompletedPredictionsFragment.newInstance(CompletedPredictionsFragment.TAB_COMPLETED), getString(R.string.tab_matches_completed));
         viewPager.setAdapter(adapter);
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-        Toast.makeText(BetsActivity.this, uri.toString(), Toast.LENGTH_SHORT).show();
+    public void onFragmentInteraction(int matchId) {
+        Toast.makeText(BetsActivity.this, Integer.toString(matchId), Toast.LENGTH_SHORT).show();
     }
 
     static class Adapter extends FragmentPagerAdapter {

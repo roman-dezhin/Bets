@@ -1,6 +1,4 @@
-package biz.ddroid.bets.Rest;
-
-import android.util.Log;
+package biz.ddroid.bets.rest;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;

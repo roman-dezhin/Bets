@@ -1,4 +1,4 @@
-package biz.ddroid.bets.Utils;
+package biz.ddroid.bets.utils;
 
 
 import biz.ddroid.bets.BuildConfig;

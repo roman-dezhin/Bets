@@ -1,4 +1,4 @@
-package biz.ddroid.bets.Activities;
+package biz.ddroid.bets.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -18,7 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.PersistentCookieStore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,18 +29,20 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
 
+import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
-import biz.ddroid.bets.Rest.ServicesClient;
-import biz.ddroid.bets.Rest.UserServices;
-import biz.ddroid.bets.Utils.NetworkConstants;
-import biz.ddroid.bets.Utils.SharedPrefs;
+import biz.ddroid.bets.rest.ServicesClient;
+import biz.ddroid.bets.rest.SystemServices;
+import biz.ddroid.bets.rest.UserServices;
+import biz.ddroid.bets.utils.NetworkConstants;
+import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 public class LoginActivity extends AppCompatActivity {
     private ServicesClient servicesClient;
     private UserServices userServices;
-    String url = NetworkConstants.SERVER_ADDRESS;
-    String apiEndpoint = NetworkConstants.API_ENDPOINT;
+    private String url = NetworkConstants.SERVER_ADDRESS;
+    private String apiEndpoint = NetworkConstants.API_ENDPOINT;
     // UI references.
     private EditText mUsernameView;
     private EditText mEmailView;
@@ -51,6 +55,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        servicesClient = BetApplication.servicesClient;
+        servicesClient.setCookieStore(new PersistentCookieStore(getApplicationContext()));
+        userServices = new UserServices(servicesClient);
 
         checkIfUserCredentialsIsExists();
 
@@ -82,26 +90,45 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-
-        servicesClient = new ServicesClient(url, apiEndpoint);
-        userServices = new UserServices(servicesClient);
     }
 
     private void checkIfUserCredentialsIsExists() {
         SharedPreferences settings = getSharedPreferences(SharedPrefs.PREFS_NAME, 0);
-        String username = settings.getString(SharedPrefs.USERNAME, "");
-        String password = settings.getString(SharedPrefs.PASSWORD, "");
-        String token = settings.getString(SharedPrefs.TOKEN, "");
-        String email = settings.getString(SharedPrefs.EMAIL, "");
-        if (!username.isEmpty() && !password.isEmpty() && !token.isEmpty() && !email.isEmpty()) {
-            Intent intent = new Intent(getApplicationContext(), BetsActivity.class);
-            intent.putExtra("token", token);
-            intent.putExtra("username", username);
-            intent.putExtra("password", password);
-            intent.putExtra("email", email);
-            startActivity(intent);
-            finish();
+        final String userId = settings.getString(SharedPrefs.UID, "");
+        final String username = settings.getString(SharedPrefs.USERNAME, "");
+        final String password = settings.getString(SharedPrefs.PASSWORD, "");
+        final String token = settings.getString(SharedPrefs.TOKEN, "");
+        final String email = settings.getString(SharedPrefs.EMAIL, "");
+        if (!userId.isEmpty() && !username.isEmpty() && !password.isEmpty() && !token.isEmpty() && !email.isEmpty()) {
+            servicesClient.setToken(token);
+            SystemServices systemServices = new SystemServices(servicesClient);
+            systemServices.connect(new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject responseBody) {
+                    try {
+                        if (responseBody.getJSONObject("user").get("uid").equals(userId)) {
+                            Intent intent = new Intent(getApplicationContext(), BetsActivity.class);
+                            intent.putExtra("token", token);
+                            intent.putExtra("username", username);
+                            intent.putExtra("password", password);
+                            intent.putExtra("email", email);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseBody, Throwable error) {
+
+                }
+            });
         }
+
+
+
     }
 
     /**
@@ -207,7 +234,6 @@ public class LoginActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     mEmailView.setError(str);
-
                     mEmailView.requestFocus();
                 }
 
@@ -235,11 +261,13 @@ public class LoginActivity extends AppCompatActivity {
                 String session_id = "";
                 String email = "";
                 String token = "";
+                String uid = "";
                 try {
                     email = response.getJSONObject("user").getString("mail");
                     session_name = response.getString("session_name");
                     session_id = response.getString("sessid");
                     token = response.getString("token");
+                    uid = response.getJSONObject("user").getString("uid");
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.d(TAG, "json response: ", e);
@@ -248,6 +276,8 @@ public class LoginActivity extends AppCompatActivity {
                 Log.v(TAG, "Session_id: " + session_id);
                 Log.v(TAG, "Email: " + email);
                 Log.v(TAG, "token: " + token);
+                Log.v(TAG, "uid: " + uid);
+
 
                 if (!token.isEmpty()) {
                     SharedPreferences settings = getSharedPreferences(SharedPrefs.PREFS_NAME, 0);
@@ -256,6 +286,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(SharedPrefs.EMAIL, email);
                     editor.putString(SharedPrefs.PASSWORD, password);
                     editor.putString(SharedPrefs.TOKEN, token);
+                    editor.putString(SharedPrefs.UID, uid);
                     editor.commit();
 
                     Intent intent = new Intent(getApplicationContext(), BetsActivity.class);
@@ -263,6 +294,7 @@ public class LoginActivity extends AppCompatActivity {
                     intent.putExtra("username", username);
                     intent.putExtra("password", password);
                     intent.putExtra("email", email);
+                    intent.putExtra("uid", uid);
                     startActivity(intent);
                     finish();
                 }

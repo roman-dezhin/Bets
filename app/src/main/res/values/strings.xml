@@ -24,5 +24,8 @@
         completions."
     </string>
     <string name="title_matches_activity">Matches</string>
+    <string name="tab_matches_new">New</string>
+    <string name="tab_matches_pending">Pending</string>
+    <string name="tab_matches_completed">Completed</string>
 
 </resources>

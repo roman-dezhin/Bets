@@ -1,4 +1,4 @@
-package biz.ddroid.bets.Rest;
+package biz.ddroid.bets.rest;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import org.json.JSONObject;
