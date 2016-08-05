@@ -54,10 +54,21 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
         imageView = (ImageView)cardView.findViewById(R.id.icon_team2);
         imageView.setImageDrawable(ResourcesCompat.getDrawable(cardView.getResources(), R.drawable.team2, null));
 
+        TextView tour_name = (TextView) cardView.findViewById(R.id.tour_name);
+        tour_name.setText(match.getTourName() + "   " + match.getStage());
+
+        TextView date_time = (TextView) cardView.findViewById(R.id.date_time);
+        date_time.setText(match.getDateTime());
+
+        TextView bets_count = (TextView) cardView.findViewById(R.id.bets_count);
+        bets_count.setText("Bets count: " + match.getBetsCount());
+
         TextView textView = (TextView)cardView.findViewById(R.id.name_team1);
         textView.setText(match.getTeam1());
+
         textView = (TextView)cardView.findViewById(R.id.name_team2);
         textView.setText(match.getTeam2());
+
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
