@@ -32,8 +32,9 @@ public class Match implements Parcelable{
     private String imageTeam2;
     private String city;
     private int betsCount;
+    private int points;
 
-    public Match(int id, String dateTime, int tourId, String tourName, String stage, String team1, String team2, int scoreTeam1, int scoreTeam2, int betTeam1, int betTeam2, String imageTeam1, String imageTeam2, String city, int betsCount) {
+    public Match(int id, String dateTime, int tourId, String tourName, String stage, String team1, String team2, int scoreTeam1, int scoreTeam2, int betTeam1, int betTeam2, String imageTeam1, String imageTeam2, String city, int betsCount, int points) {
         this.id = id;
         this.dateTime = dateTime;
         this.tourId = tourId;
@@ -49,6 +50,7 @@ public class Match implements Parcelable{
         this.imageTeam2 = imageTeam2;
         this.city = city;
         this.betsCount = betsCount;
+        this.points = points;
     }
 
     protected Match(Parcel in) {
@@ -67,6 +69,7 @@ public class Match implements Parcelable{
         imageTeam2 = in.readString();
         city = in.readString();
         betsCount = in.readInt();
+        points = in.readInt();
     }
 
     public int getId() {
@@ -129,6 +132,10 @@ public class Match implements Parcelable{
         return betsCount;
     }
 
+    public int getPoints() {
+        return points;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -189,6 +196,11 @@ public class Match implements Parcelable{
         this.betsCount = betsCount;
     }
 
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -211,6 +223,7 @@ public class Match implements Parcelable{
         parcel.writeString(imageTeam2);
         parcel.writeString(city);
         parcel.writeInt(betsCount);
+        parcel.writeInt(points);
     }
 
     @Override
@@ -231,6 +244,7 @@ public class Match implements Parcelable{
                 ", imageTeam2='" + imageTeam2 + '\'' +
                 ", city='" + city + '\'' +
                 ", betsCount=" + betsCount +
+                ", betsCount=" + points +
                 '}';
     }
 }

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view_pending"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tour_name"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="Tournament (Country)  stage"
+                android:layout_gravity="center_horizontal"
+                android:textSize="16sp"
+                android:layout_margin="2dp"
+                android:layout_alignParentTop="true"
+                android:gravity="center_horizontal"
+                android:textColor="@color/cardMatchTourName" />
+
+            <TextView
+                android:id="@+id/date_time"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="21:45 04/08/2016"
+                android:layout_below="@id/tour_name"
+                android:layout_gravity="center_horizontal"
+                android:textSize="16sp"
+                android:layout_margin="2dp"
+                android:gravity="center_horizontal"
+                android:textStyle="bold|italic" />
+            <TextView
+                android:id="@+id/match_score"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="- : -"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true" />
+            <TextView
+                android:id="@+id/match_prediction"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:layout_below="@+id/match_score" />
+            <TextView
+                android:id="@+id/name_team1"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Team1"
+                android:textSize="18sp"
+                android:layout_toLeftOf="@id/match_score"
+                android:layout_below="@id/date_time"
+                android:gravity="center"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="2dp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/name_team2"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Team2"
+                android:textSize="18sp"
+                android:layout_toRightOf="@id/match_score"
+                android:layout_below="@id/date_time"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginRight="2dp"
+                android:textStyle="bold" />
+            <ImageView android:id="@+id/icon_team1"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:src="@drawable/team1"
+                android:layout_below="@id/name_team1"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_toLeftOf="@+id/match_score" />
+
+            <ImageView android:id="@+id/icon_team2"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:src="@drawable/team2"
+                android:layout_below="@id/name_team2"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_toRightOf="@+id/match_score" />
+            <TextView
+                android:id="@+id/bets_count"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="Bets count: 0"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentBottom="true"
+                android:textSize="16sp"
+                android:layout_margin="2dp"
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorPrimary" />
+
+            </RelativeLayout>
+</android.support.v7.widget.CardView>

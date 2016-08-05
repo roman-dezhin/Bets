@@ -160,7 +160,8 @@ public class CompletedPredictionsFragment extends Fragment {
                         jsonMatch.getString("team_home_icon"),
                         jsonMatch.getString("team_visitor_icon"),
                         jsonMatch.getString("city"),
-                        jsonMatch.getInt("predictions_count"));
+                        jsonMatch.getInt("predictions_count"),
+                        jsonMatch.getInt("points"));
                 mMatches.add(match);
             }
             adapter.setMatches(mMatches);

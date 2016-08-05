@@ -39,7 +39,7 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
 
     @Override
     public NewPredictionsContentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.card_match, parent, false);
+        CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.card_match_new, parent, false);
 
         return new ViewHolder(cv);
     }
@@ -48,26 +48,26 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
     public void onBindViewHolder(NewPredictionsContentAdapter.ViewHolder holder, final int position) {
         final Match match = mMatches.get(position);
         CardView cardView = holder.cardView;
-        ImageView imageView = (ImageView)cardView.findViewById(R.id.icon_team1);
-        imageView.setImageDrawable(ResourcesCompat.getDrawable(cardView.getResources(), R.drawable.team1, null));
+        ImageView iconTeam1 = (ImageView) cardView.findViewById(R.id.icon_team1);
+        iconTeam1.setImageDrawable(ResourcesCompat.getDrawable(cardView.getResources(), R.drawable.team1, null));
 
-        imageView = (ImageView)cardView.findViewById(R.id.icon_team2);
-        imageView.setImageDrawable(ResourcesCompat.getDrawable(cardView.getResources(), R.drawable.team2, null));
+        ImageView iconTeam2 = (ImageView) cardView.findViewById(R.id.icon_team2);
+        iconTeam2.setImageDrawable(ResourcesCompat.getDrawable(cardView.getResources(), R.drawable.team2, null));
 
-        TextView tour_name = (TextView) cardView.findViewById(R.id.tour_name);
-        tour_name.setText(match.getTourName() + "   " + match.getStage());
+        TextView tourName = (TextView) cardView.findViewById(R.id.tour_name);
+        tourName.setText(match.getTourName() + "   " + match.getStage());
 
-        TextView date_time = (TextView) cardView.findViewById(R.id.date_time);
-        date_time.setText(match.getDateTime());
+        TextView dateTime = (TextView) cardView.findViewById(R.id.date_time);
+        dateTime.setText(match.getDateTime());
 
-        TextView bets_count = (TextView) cardView.findViewById(R.id.bets_count);
-        bets_count.setText("Bets count: " + match.getBetsCount());
+        TextView betsCount = (TextView) cardView.findViewById(R.id.bets_count);
+        betsCount.setText("Bets count: " + match.getBetsCount());
 
-        TextView textView = (TextView)cardView.findViewById(R.id.name_team1);
-        textView.setText(match.getTeam1());
+        TextView nameTeam1 = (TextView) cardView.findViewById(R.id.name_team1);
+        nameTeam1.setText(match.getTeam1());
 
-        textView = (TextView)cardView.findViewById(R.id.name_team2);
-        textView.setText(match.getTeam2());
+        TextView nameTeam2 = (TextView) cardView.findViewById(R.id.name_team2);
+        nameTeam2.setText(match.getTeam2());
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
