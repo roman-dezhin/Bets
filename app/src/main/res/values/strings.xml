@@ -28,6 +28,7 @@
     <string name="tab_matches_pending">Pending</string>
     <string name="tab_matches_completed">Completed</string>
     <string name="betsCount">"Bets count: %1$d"</string>
+    <string name="friendsPredictions">"Friends predictions:"</string>
     <string name="points">"Points: %1$d"</string>
 
 </resources>

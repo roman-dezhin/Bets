@@ -3,6 +3,8 @@ package biz.ddroid.bets.pojo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
+
 public class Match implements Parcelable{
 
     public static final Creator<Match> CREATOR = new Creator<Match>() {
@@ -32,9 +34,10 @@ public class Match implements Parcelable{
     private String imageTeam2;
     private String city;
     private int betsCount;
+    private String friendsPredictions;
     private int points;
 
-    public Match(int id, String dateTime, int tourId, String tourName, String stage, String team1, String team2, int scoreTeam1, int scoreTeam2, int betTeam1, int betTeam2, String imageTeam1, String imageTeam2, String city, int betsCount, int points) {
+    public Match(int id, String dateTime, int tourId, String tourName, String stage, String team1, String team2, int scoreTeam1, int scoreTeam2, int betTeam1, int betTeam2, String imageTeam1, String imageTeam2, String city, int betsCount, String friendsPredictions, int points) {
         this.id = id;
         this.dateTime = dateTime;
         this.tourId = tourId;
@@ -50,6 +53,7 @@ public class Match implements Parcelable{
         this.imageTeam2 = imageTeam2;
         this.city = city;
         this.betsCount = betsCount;
+        this.friendsPredictions = friendsPredictions;
         this.points = points;
     }
 
@@ -69,6 +73,7 @@ public class Match implements Parcelable{
         imageTeam2 = in.readString();
         city = in.readString();
         betsCount = in.readInt();
+        friendsPredictions = in.readString();
         points = in.readInt();
     }
 
@@ -130,6 +135,10 @@ public class Match implements Parcelable{
 
     public int getBetsCount() {
         return betsCount;
+    }
+
+    public String getFriendsPredictions() {
+        return friendsPredictions;
     }
 
     public int getPoints() {
@@ -196,10 +205,11 @@ public class Match implements Parcelable{
         this.betsCount = betsCount;
     }
 
+    public void setFriendsPredictions(String friendsPredictions) {this.friendsPredictions = friendsPredictions;}
+
     public void setPoints(int points) {
         this.points = points;
     }
-
 
     @Override
     public int describeContents() {
@@ -223,6 +233,7 @@ public class Match implements Parcelable{
         parcel.writeString(imageTeam2);
         parcel.writeString(city);
         parcel.writeInt(betsCount);
+        parcel.writeString(friendsPredictions);
         parcel.writeInt(points);
     }
 
@@ -244,7 +255,8 @@ public class Match implements Parcelable{
                 ", imageTeam2='" + imageTeam2 + '\'' +
                 ", city='" + city + '\'' +
                 ", betsCount=" + betsCount +
-                ", betsCount=" + points +
+                ", friendsPredictions=" + friendsPredictions +
+                ", points=" + points +
                 '}';
     }
 }

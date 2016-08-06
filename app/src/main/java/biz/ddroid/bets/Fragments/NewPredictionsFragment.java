@@ -160,6 +160,7 @@ public class NewPredictionsFragment extends Fragment {
                         jsonMatch.getString("team_visitor_icon"),
                         jsonMatch.getString("city"),
                         jsonMatch.getInt("predictions_count"),
+                        "",
                         0);
                 mMatches.add(match);
             }

@@ -141,8 +141,15 @@ public class PendingPredictionsFragment extends Fragment {
     private void parseMatches(byte[] responseBody) {
         try {
             JSONArray response = new JSONArray(new String(responseBody));
-            for (int i=0; i < response.length(); i++) {
+            for (int i = 0; i < response.length(); i++) {
                 JSONObject jsonMatch = response.getJSONObject(i);
+                JSONArray friendsPredictionsArray = jsonMatch.getJSONArray("friends_predictions");
+                String friendPredictionsString = "";
+                for (int j = 0; j < friendsPredictionsArray.length(); j++) {
+                    friendPredictionsString += "\n" + friendsPredictionsArray.getJSONObject(j).getString("user_name")
+                    + ": " + friendsPredictionsArray.getJSONObject(j).getString("team_home_score")
+                            + " : " + friendsPredictionsArray.getJSONObject(j).getString("team_visitor_score");
+                }
                 Match match = new Match(
                         jsonMatch.getInt("mid"),
                         jsonMatch.getString("date"),
@@ -158,7 +165,8 @@ public class PendingPredictionsFragment extends Fragment {
                         jsonMatch.getString("team_home_icon"),
                         jsonMatch.getString("team_visitor_icon"),
                         jsonMatch.getString("city"),
-                        jsonMatch.getInt("predictions_count"),
+                        0,
+                        friendPredictionsString,
                         0);
                 mMatches.add(match);
             }

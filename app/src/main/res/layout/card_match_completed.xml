@@ -3,7 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view_completed"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="235dp"
     android:layout_margin="5dp"
     card_view:cardCornerRadius="4dp">
 
@@ -39,8 +39,11 @@
                 android:layout_width="wrap_content"
                 android:text="- : -"
                 android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_centerInParent="true" />
+                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/date_time"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
             <TextView
                 android:id="@+id/match_prediction"
                 android:layout_height="wrap_content"
@@ -48,7 +51,9 @@
                 android:textSize="20sp"
                 android:layout_gravity="center"
                 android:layout_centerInParent="true"
-                android:layout_below="@+id/match_score" />
+                android:layout_below="@+id/match_score"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
             <TextView
                 android:id="@+id/name_team1"
                 android:layout_height="wrap_content"
@@ -97,10 +102,10 @@
                 android:layout_marginBottom="2dp"
                 android:layout_toRightOf="@+id/match_score" />
             <TextView
-                android:id="@+id/bets_count"
+                android:id="@+id/friends_predictions"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:text="Bets count: 0"
+                android:text="Friends predictions:"
                 android:layout_gravity="center_horizontal"
                 android:layout_alignParentBottom="true"
                 android:textSize="16sp"
@@ -113,7 +118,8 @@
                 android:layout_width="match_parent"
                 android:text="Points: 0"
                 android:layout_gravity="center_horizontal"
-                android:layout_above="@id/bets_count"
+                android:layout_above="@id/friends_predictions"
+                android:layout_below="@id/match_prediction"
                 android:textSize="16sp"
                 android:gravity="center_horizontal"
                 android:textColor="@android:color/holo_orange_dark"
