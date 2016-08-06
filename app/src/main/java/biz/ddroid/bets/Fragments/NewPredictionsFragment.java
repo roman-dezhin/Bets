@@ -50,7 +50,6 @@ public class NewPredictionsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private PredictServices predictServices;
-    private ServicesClient servicesClient;
 
     private NewPredictionsContentAdapter adapter;
 
@@ -81,7 +80,7 @@ public class NewPredictionsFragment extends Fragment {
         if (getArguments() != null) {
             mBetsStatus = getArguments().getInt(ARG_BETS_STATUS);
         }
-        servicesClient = BetApplication.servicesClient;
+        ServicesClient servicesClient = BetApplication.servicesClient;
         SharedPreferences settings = getActivity().getSharedPreferences(SharedPrefs.PREFS_NAME, 0);
         servicesClient.setToken(settings.getString(SharedPrefs.TOKEN, ""));
         predictServices = new PredictServices(servicesClient);
@@ -113,7 +112,7 @@ public class NewPredictionsFragment extends Fragment {
                 predictServices.newMatches(new AsyncHttpResponseHandler() {
                     @Override
                     public void onFinish() {
-                        Log.v(TAG, "finita");
+                        Log.v(TAG, "onFinish");
                     }
 
                     @Override
@@ -204,7 +203,6 @@ public class NewPredictionsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(int matchId);
     }
 

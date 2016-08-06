@@ -1,6 +1,5 @@
 package biz.ddroid.bets.adapters;
 
-import android.content.res.Resources;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
-import biz.ddroid.bets.activities.MatchActivity;
-import biz.ddroid.bets.fragments.NewPredictionsFragment;
 import biz.ddroid.bets.pojo.Match;
 
 public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredictionsContentAdapter.ViewHolder>  {
@@ -37,7 +33,6 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
 
     public void setMatches(ArrayList<Match> listMatches) {
         this.mMatches = listMatches;
-        //update the adapter to reflect the new set of matches
         notifyDataSetChanged();
     }
 

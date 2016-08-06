@@ -33,7 +33,6 @@ public class CompletedPredictionsContentAdapter extends RecyclerView.Adapter<Com
 
     public void setMatches(ArrayList<Match> listMatches) {
         this.mMatches = listMatches;
-        //update the adapter to reflect the new set of movies
         notifyDataSetChanged();
     }
 

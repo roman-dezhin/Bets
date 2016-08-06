@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.adapters.CompletedPredictionsContentAdapter;
-import biz.ddroid.bets.adapters.NewPredictionsContentAdapter;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
@@ -50,7 +49,6 @@ public class CompletedPredictionsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private PredictServices predictServices;
-    private ServicesClient servicesClient;
 
     private CompletedPredictionsContentAdapter adapter;
 
@@ -81,7 +79,7 @@ public class CompletedPredictionsFragment extends Fragment {
         if (getArguments() != null) {
             mBetsStatus = getArguments().getInt(ARG_BETS_STATUS);
         }
-        servicesClient = BetApplication.servicesClient;
+        ServicesClient servicesClient = BetApplication.servicesClient;
         SharedPreferences settings = getActivity().getSharedPreferences(SharedPrefs.PREFS_NAME, 0);
         servicesClient.setToken(settings.getString(SharedPrefs.TOKEN, ""));
         predictServices = new PredictServices(servicesClient);
@@ -113,7 +111,7 @@ public class CompletedPredictionsFragment extends Fragment {
                 predictServices.completed(new AsyncHttpResponseHandler() {
                     @Override
                     public void onFinish() {
-                        Log.v(TAG, "finita");
+                        Log.v(TAG, "onFinish");
                     }
 
                     @Override
@@ -204,7 +202,6 @@ public class CompletedPredictionsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(int matchId);
     }
 

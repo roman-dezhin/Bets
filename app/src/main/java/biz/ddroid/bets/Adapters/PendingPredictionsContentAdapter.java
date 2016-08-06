@@ -33,7 +33,6 @@ public class PendingPredictionsContentAdapter extends RecyclerView.Adapter<Pendi
 
     public void setMatches(ArrayList<Match> listMatches) {
         this.mMatches = listMatches;
-        //update the adapter to reflect the new set of movies
         notifyDataSetChanged();
     }
 
