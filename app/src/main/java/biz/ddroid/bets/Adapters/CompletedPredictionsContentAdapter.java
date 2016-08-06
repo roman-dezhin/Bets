@@ -61,7 +61,7 @@ public class CompletedPredictionsContentAdapter extends RecyclerView.Adapter<Com
         dateTime.setText(match.getDateTime());
 
         TextView betsCount = (TextView) cardView.findViewById(R.id.bets_count);
-        betsCount.setText("Bets count: " + match.getBetsCount());
+        betsCount.setText(String.format(cardView.getContext().getString(R.string.betsCount), match.getBetsCount()));
 
         TextView nameTeam1 = (TextView) cardView.findViewById(R.id.name_team1);
         nameTeam1.setText(match.getTeam1());
@@ -73,7 +73,7 @@ public class CompletedPredictionsContentAdapter extends RecyclerView.Adapter<Com
         matchPrediction.setText(match.getBetTeam1() + " : " + match.getBetTeam2());
 
         TextView points = (TextView) cardView.findViewById(R.id.points);
-        points.setText("Points: " + match.getPoints());
+        points.setText(String.format(cardView.getContext().getString(R.string.points), match.getPoints()));
 
         TextView score = (TextView) cardView.findViewById(R.id.match_score);
         score.setText(match.getScoreTeam1() + " : " + match.getScoreTeam2());

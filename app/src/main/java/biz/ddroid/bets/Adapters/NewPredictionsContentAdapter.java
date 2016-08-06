@@ -1,5 +1,6 @@
 package biz.ddroid.bets.adapters;
 
+import android.content.res.Resources;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
+import biz.ddroid.bets.activities.MatchActivity;
+import biz.ddroid.bets.fragments.NewPredictionsFragment;
 import biz.ddroid.bets.pojo.Match;
 
 public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredictionsContentAdapter.ViewHolder>  {
@@ -61,7 +65,7 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
         dateTime.setText(match.getDateTime());
 
         TextView betsCount = (TextView) cardView.findViewById(R.id.bets_count);
-        betsCount.setText("Bets count: " + match.getBetsCount());
+        betsCount.setText(String.format(cardView.getContext().getString(R.string.betsCount), match.getBetsCount()));
 
         TextView nameTeam1 = (TextView) cardView.findViewById(R.id.name_team1);
         nameTeam1.setText(match.getTeam1());
