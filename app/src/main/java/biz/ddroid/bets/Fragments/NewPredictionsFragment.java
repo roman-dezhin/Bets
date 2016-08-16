@@ -53,7 +53,7 @@ public class NewPredictionsFragment extends Fragment {
 
     private NewPredictionsContentAdapter adapter;
 
-    String TAG = "NewPredictionsFragment";
+    private String TAG = "NewPredictionsFragment";
 
     public NewPredictionsFragment() {
         // Required empty public constructor
@@ -96,8 +96,8 @@ public class NewPredictionsFragment extends Fragment {
         adapter = new NewPredictionsContentAdapter(mBetsStatus);
         adapter.setListener(new NewPredictionsContentAdapter.Listener() {
             @Override
-            public void onClick(int position) {
-                onMatchSelected(position);
+            public void onClick(Match match) {
+                onMatchSelected(match);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -152,16 +152,10 @@ public class NewPredictionsFragment extends Fragment {
                         jsonMatch.getString("stage"),
                         jsonMatch.getString("team_home"),
                         jsonMatch.getString("team_visitor"),
-                        -1,
-                        -1,
-                        -1,
-                        -1,
                         jsonMatch.getString("team_home_icon"),
                         jsonMatch.getString("team_visitor_icon"),
                         jsonMatch.getString("city"),
-                        jsonMatch.getInt("predictions_count"),
-                        "",
-                        0);
+                        jsonMatch.getInt("predictions_count"));
                 mMatches.add(match);
             }
             adapter.setMatches(mMatches);
@@ -170,9 +164,9 @@ public class NewPredictionsFragment extends Fragment {
         }
     }
 
-    private void onMatchSelected(int matchId) {
+    private void onMatchSelected(Match match) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(matchId);
+            mListener.onFragmentInteraction(match);
         }
     }
 
@@ -204,7 +198,7 @@ public class NewPredictionsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(int matchId);
+        void onFragmentInteraction(Match match);
     }
 
     @Override

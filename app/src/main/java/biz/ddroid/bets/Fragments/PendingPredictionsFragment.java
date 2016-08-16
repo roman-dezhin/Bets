@@ -52,7 +52,7 @@ public class PendingPredictionsFragment extends Fragment {
 
     private PendingPredictionsContentAdapter adapter;
 
-    String TAG = "PendingPredictionsFragment";
+    private String TAG = "PendingPredictionsFragment";
 
     public PendingPredictionsFragment() {
         // Required empty public constructor
@@ -95,8 +95,8 @@ public class PendingPredictionsFragment extends Fragment {
         adapter = new PendingPredictionsContentAdapter(mBetsStatus);
         adapter.setListener(new PendingPredictionsContentAdapter.Listener() {
             @Override
-            public void onClick(int position) {
-                onMatchSelected(position);
+            public void onClick(Match match) {
+                onMatchSelected(match);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -158,16 +158,12 @@ public class PendingPredictionsFragment extends Fragment {
                         jsonMatch.getString("stage"),
                         jsonMatch.getString("team_home"),
                         jsonMatch.getString("team_visitor"),
-                        -1,
-                        -1,
                         jsonMatch.getInt("team_home_prediction"),
                         jsonMatch.getInt("team_visitor_prediction"),
                         jsonMatch.getString("team_home_icon"),
                         jsonMatch.getString("team_visitor_icon"),
                         jsonMatch.getString("city"),
-                        0,
-                        friendPredictionsString,
-                        0);
+                       friendPredictionsString);
                 mMatches.add(match);
             }
             adapter.setMatches(mMatches);
@@ -176,9 +172,9 @@ public class PendingPredictionsFragment extends Fragment {
         }
     }
 
-    private void onMatchSelected(int matchId) {
+    private void onMatchSelected(Match match) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(matchId);
+            mListener.onFragmentInteraction(match);
         }
     }
 
@@ -210,7 +206,7 @@ public class PendingPredictionsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(int matchId);
+        void onFragmentInteraction(Match match);
     }
 
     @Override

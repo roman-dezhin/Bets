@@ -24,7 +24,7 @@ public class PendingPredictionsContentAdapter extends RecyclerView.Adapter<Pendi
     }
 
     public interface Listener {
-         void onClick(int position);
+         void onClick(Match match);
     }
 
     public void setListener(Listener listener) {
@@ -75,7 +75,7 @@ public class PendingPredictionsContentAdapter extends RecyclerView.Adapter<Pendi
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.onClick(match.getId());
+                    mListener.onClick(match);
                 }
             }
         });

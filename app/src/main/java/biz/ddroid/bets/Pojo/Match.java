@@ -57,6 +57,66 @@ public class Match implements Parcelable{
         this.points = points;
     }
 
+    public Match(int id, String dateTime, int tourId, String tourName, String stage, String team1, String team2, int scoreTeam1, int scoreTeam2, int betTeam1, int betTeam2, String imageTeam1, String imageTeam2, String city, String friendsPredictions, int points) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.tourId = tourId;
+        this.tourName = tourName;
+        this.stage = stage;
+        this.team1 = team1;
+        this.team2 = team2;
+        this.scoreTeam1 = scoreTeam1;
+        this.scoreTeam2 = scoreTeam2;
+        this.betTeam1 = betTeam1;
+        this.betTeam2 = betTeam2;
+        this.imageTeam1 = imageTeam1;
+        this.imageTeam2 = imageTeam2;
+        this.city = city;
+        this.betsCount = 0;
+        this.friendsPredictions = friendsPredictions;
+        this.points = points;
+    }
+
+    public Match(int id, String dateTime, int tourId, String tourName, String stage, String team1, String team2, int betTeam1, int betTeam2, String imageTeam1, String imageTeam2, String city, String friendsPredictions) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.tourId = tourId;
+        this.tourName = tourName;
+        this.stage = stage;
+        this.team1 = team1;
+        this.team2 = team2;
+        this.scoreTeam1 = -1;
+        this.scoreTeam2 = -1;
+        this.betTeam1 = betTeam1;
+        this.betTeam2 = betTeam2;
+        this.imageTeam1 = imageTeam1;
+        this.imageTeam2 = imageTeam2;
+        this.city = city;
+        this.betsCount = 0;
+        this.friendsPredictions = friendsPredictions;
+        this.points = 0;
+    }
+
+    public Match(int id, String dateTime, int tourId, String tourName, String stage, String team1, String team2, String imageTeam1, String imageTeam2, String city, int betsCount) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.tourId = tourId;
+        this.tourName = tourName;
+        this.stage = stage;
+        this.team1 = team1;
+        this.team2 = team2;
+        this.scoreTeam1 = -1;
+        this.scoreTeam2 = -1;
+        this.betTeam1 = -1;
+        this.betTeam2 = -1;
+        this.imageTeam1 = imageTeam1;
+        this.imageTeam2 = imageTeam2;
+        this.city = city;
+        this.betsCount = betsCount;
+        this.friendsPredictions = "";
+        this.points = 0;
+    }
+
     protected Match(Parcel in) {
         id = in.readInt();
         dateTime = in.readString();
@@ -82,6 +142,8 @@ public class Match implements Parcelable{
     }
 
     public String getDateTime() {
+
+        // TODO: convert datetime in user timezone
         return dateTime;
     }
 

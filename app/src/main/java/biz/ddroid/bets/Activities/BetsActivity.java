@@ -1,7 +1,9 @@
 package biz.ddroid.bets.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -22,18 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import biz.ddroid.bets.fragments.CompletedPredictionsFragment;
+import biz.ddroid.bets.fragments.CreatePredictionFragment;
 import biz.ddroid.bets.fragments.NewPredictionsFragment;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.fragments.PendingPredictionsFragment;
+import biz.ddroid.bets.pojo.Match;
+import biz.ddroid.bets.utils.SharedPrefs;
 
 public class BetsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NewPredictionsFragment.OnFragmentInteractionListener,
-        PendingPredictionsFragment.OnFragmentInteractionListener, CompletedPredictionsFragment.OnFragmentInteractionListener {
-    private String username;
-    private String password;
-    private String email;
-    private String token;
-    private String uId;
+        PendingPredictionsFragment.OnFragmentInteractionListener, CompletedPredictionsFragment.OnFragmentInteractionListener,
+        CreatePredictionFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +42,6 @@ public class BetsActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        uId = getIntent().getExtras().getString("uid");
-        token = getIntent().getExtras().getString("token");
-        username = getIntent().getExtras().getString("username");
-        password = getIntent().getExtras().getString("password");
-        email = getIntent().getExtras().getString("email");
 
         // Setting ViewPager for each Tabs
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -66,9 +61,9 @@ public class BetsActivity extends AppCompatActivity
 
         View header = navigationView.getHeaderView(0);
         TextView header_user_name = (TextView) header.findViewById(R.id.header_username);
-        if (header_user_name != null) header_user_name.setText(username);
+        if (header_user_name != null) header_user_name.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.USERNAME, "Anonymous"));
         TextView header_user_email = (TextView) header.findViewById(R.id.header_user_email);
-        if (header_user_email != null) header_user_email.setText(email);
+        if (header_user_email != null) header_user_email.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.EMAIL, "email@domain.l"));
     }
 
     // Add Fragments to Tabs
@@ -81,8 +76,16 @@ public class BetsActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(int matchId) {
-        Toast.makeText(BetsActivity.this, Integer.toString(matchId), Toast.LENGTH_SHORT).show();
+    public void onFragmentInteraction(Match match) {
+        Toast.makeText(BetsActivity.this, Integer.toString(match.getId()), Toast.LENGTH_SHORT).show();
+        DialogFragment newFragment = CreatePredictionFragment.newInstance(match);
+        newFragment.show(getSupportFragmentManager(), "dialog");
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     static class Adapter extends FragmentPagerAdapter {

@@ -52,7 +52,7 @@ public class CompletedPredictionsFragment extends Fragment {
 
     private CompletedPredictionsContentAdapter adapter;
 
-    String TAG = "CompletedPredictionsFragment";
+    private String TAG = "CompletedPredictionsFragment";
 
     public CompletedPredictionsFragment() {
         // Required empty public constructor
@@ -95,8 +95,8 @@ public class CompletedPredictionsFragment extends Fragment {
         adapter = new CompletedPredictionsContentAdapter(mBetsStatus);
         adapter.setListener(new CompletedPredictionsContentAdapter.Listener() {
             @Override
-            public void onClick(int position) {
-                onMatchSelected(position);
+            public void onClick(Match match) {
+                onMatchSelected(match);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -166,7 +166,6 @@ public class CompletedPredictionsFragment extends Fragment {
                         jsonMatch.getString("team_home_icon"),
                         jsonMatch.getString("team_visitor_icon"),
                         jsonMatch.getString("city"),
-                        0,
                         friendPredictionsString,
                         jsonMatch.getInt("points"));
                 mMatches.add(match);
@@ -177,9 +176,9 @@ public class CompletedPredictionsFragment extends Fragment {
         }
     }
 
-    private void onMatchSelected(int matchId) {
+    private void onMatchSelected(Match match) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(matchId);
+            mListener.onFragmentInteraction(match);
         }
     }
 
@@ -211,7 +210,7 @@ public class CompletedPredictionsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(int matchId);
+        void onFragmentInteraction(Match match);
     }
 
     @Override

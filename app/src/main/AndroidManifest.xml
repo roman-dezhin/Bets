@@ -14,7 +14,6 @@
             android:label="@string/title_matches_activity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".activities.MatchActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:noHistory="true">

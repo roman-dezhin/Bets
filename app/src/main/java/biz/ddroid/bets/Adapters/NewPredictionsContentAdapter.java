@@ -24,7 +24,7 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
     }
 
     public interface Listener {
-         void onClick(int position);
+         void onClick(Match match);
     }
 
     public void setListener(Listener listener) {
@@ -72,7 +72,7 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.onClick(match.getId());
+                    mListener.onClick(match);
                 }
             }
         });

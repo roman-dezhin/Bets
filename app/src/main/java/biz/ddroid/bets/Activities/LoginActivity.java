@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 
@@ -34,15 +33,12 @@ import biz.ddroid.bets.R;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.rest.SystemServices;
 import biz.ddroid.bets.rest.UserServices;
-import biz.ddroid.bets.utils.NetworkConstants;
 import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 public class LoginActivity extends AppCompatActivity {
     private ServicesClient servicesClient;
     private UserServices userServices;
-    private String url = NetworkConstants.SERVER_ADDRESS;
-    private String apiEndpoint = NetworkConstants.API_ENDPOINT;
     // UI references.
     private EditText mUsernameView;
     private EditText mEmailView;
@@ -108,10 +104,6 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         if (responseBody.getJSONObject("user").get("uid").equals(userId)) {
                             Intent intent = new Intent(getApplicationContext(), BetsActivity.class);
-                            intent.putExtra("token", token);
-                            intent.putExtra("username", username);
-                            intent.putExtra("password", password);
-                            intent.putExtra("email", email);
                             startActivity(intent);
                             finish();
                         }
@@ -122,7 +114,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseBody, Throwable error) {
-
                 }
             });
         }
@@ -290,11 +281,6 @@ public class LoginActivity extends AppCompatActivity {
                     editor.commit();
 
                     Intent intent = new Intent(getApplicationContext(), BetsActivity.class);
-                    intent.putExtra("token", token);
-                    intent.putExtra("username", username);
-                    intent.putExtra("password", password);
-                    intent.putExtra("email", email);
-                    intent.putExtra("uid", uid);
                     startActivity(intent);
                     finish();
                 }
