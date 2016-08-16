@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import biz.ddroid.bets.fragments.BasePredictionsFragment;
 import biz.ddroid.bets.fragments.CompletedPredictionsFragment;
 import biz.ddroid.bets.fragments.CreatePredictionFragment;
 import biz.ddroid.bets.fragments.NewPredictionsFragment;
@@ -32,12 +33,15 @@ import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.utils.SharedPrefs;
 
 public class BetsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, NewPredictionsFragment.OnFragmentInteractionListener,
-        PendingPredictionsFragment.OnFragmentInteractionListener, CompletedPredictionsFragment.OnFragmentInteractionListener,
+        implements NavigationView.OnNavigationItemSelectedListener, BasePredictionsFragment.OnFragmentInteractionListener,
         CreatePredictionFragment.OnFragmentInteractionListener {
 
+    private final static int PREDICTIONS_STATUS_NEW = 0;
+    private final static int PREDICTIONS_STATUS_PENDING = 1;
+    private final static int PREDICTIONS_STATUS_COMPLETED = 2;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -66,12 +70,11 @@ public class BetsActivity extends AppCompatActivity
         if (header_user_email != null) header_user_email.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.EMAIL, "email@domain.l"));
     }
 
-    // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(NewPredictionsFragment.newInstance(NewPredictionsFragment.TAB_NEW), getString(R.string.tab_matches_new));
-        adapter.addFragment(PendingPredictionsFragment.newInstance(PendingPredictionsFragment.TAB_PENDING), getString(R.string.tab_matches_pending));
-        adapter.addFragment(CompletedPredictionsFragment.newInstance(CompletedPredictionsFragment.TAB_COMPLETED), getString(R.string.tab_matches_completed));
+        adapter.addFragment(NewPredictionsFragment.newInstance(PREDICTIONS_STATUS_NEW), getString(R.string.tab_matches_new));
+        adapter.addFragment(PendingPredictionsFragment.newInstance(PREDICTIONS_STATUS_PENDING), getString(R.string.tab_matches_pending));
+        adapter.addFragment(CompletedPredictionsFragment.newInstance(PREDICTIONS_STATUS_COMPLETED), getString(R.string.tab_matches_completed));
         viewPager.setAdapter(adapter);
     }
 

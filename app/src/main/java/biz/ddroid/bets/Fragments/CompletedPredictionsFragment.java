@@ -1,7 +1,5 @@
 package biz.ddroid.bets.fragments;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,15 +15,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 
-import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.adapters.CompletedPredictionsContentAdapter;
 import biz.ddroid.bets.pojo.Match;
-import biz.ddroid.bets.rest.PredictServices;
-import biz.ddroid.bets.rest.ServicesClient;
-import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -36,19 +29,8 @@ import cz.msebera.android.httpclient.Header;
  * Use the {@link CompletedPredictionsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CompletedPredictionsFragment extends Fragment {
-    private static final String ARG_BETS_STATUS = "bets_status";
+public class CompletedPredictionsFragment extends BasePredictionsFragment {
     private static final String STATE_MATCHES = "state_completed_predictions";
-
-    public static final int TAB_COMPLETED = 2;
-
-    private ArrayList<Match> mMatches = new ArrayList<>();
-
-    private int mBetsStatus;
-
-    private OnFragmentInteractionListener mListener;
-
-    private PredictServices predictServices;
 
     private CompletedPredictionsContentAdapter adapter;
 
@@ -58,13 +40,6 @@ public class CompletedPredictionsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param betsStatus status of bets in the fragment.
-     * @return A new instance of fragment CompletedPredictionsFragment.
-     */
     public static CompletedPredictionsFragment newInstance(int betsStatus) {
         CompletedPredictionsFragment fragment = new CompletedPredictionsFragment();
         Bundle args = new Bundle();
@@ -77,13 +52,8 @@ public class CompletedPredictionsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mBetsStatus = getArguments().getInt(ARG_BETS_STATUS);
+            mPredictionsStatus = getArguments().getInt(ARG_BETS_STATUS);
         }
-        ServicesClient servicesClient = BetApplication.servicesClient;
-        SharedPreferences settings = getActivity().getSharedPreferences(SharedPrefs.PREFS_NAME, 0);
-        servicesClient.setToken(settings.getString(SharedPrefs.TOKEN, ""));
-        predictServices = new PredictServices(servicesClient);
-
     }
 
     @Override
@@ -92,7 +62,7 @@ public class CompletedPredictionsFragment extends Fragment {
         Log.v(TAG, "onCreateView: ");
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        adapter = new CompletedPredictionsContentAdapter(mBetsStatus);
+        adapter = new CompletedPredictionsContentAdapter(mPredictionsStatus);
         adapter.setListener(new CompletedPredictionsContentAdapter.Listener() {
             @Override
             public void onClick(Match match) {
@@ -138,7 +108,7 @@ public class CompletedPredictionsFragment extends Fragment {
         outState.putParcelableArrayList(STATE_MATCHES, mMatches);
     }
 
-    private void parseMatches(byte[] responseBody) {
+    protected void parseMatches(byte[] responseBody) {
         try {
             JSONArray response = new JSONArray(new String(responseBody));
             for (int i=0; i < response.length(); i++) {
@@ -174,66 +144,5 @@ public class CompletedPredictionsFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private void onMatchSelected(Match match) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(match);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Match match);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.v(TAG, "onStart");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.v(TAG, "onResume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.v(TAG, "onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.v(TAG, "onStop");
     }
 }
