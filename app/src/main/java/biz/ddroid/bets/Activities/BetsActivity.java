@@ -65,9 +65,15 @@ public class BetsActivity extends AppCompatActivity
 
         View header = navigationView.getHeaderView(0);
         TextView header_user_name = (TextView) header.findViewById(R.id.header_username);
-        if (header_user_name != null) header_user_name.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.USERNAME, "Anonymous"));
+        if (header_user_name != null) {
+            header_user_name.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
+                    .getString(SharedPrefs.USERNAME, "Anonymous"));
+        }
         TextView header_user_email = (TextView) header.findViewById(R.id.header_user_email);
-        if (header_user_email != null) header_user_email.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.EMAIL, "email@domain.l"));
+        if (header_user_email != null) {
+            header_user_email.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
+                    .getString(SharedPrefs.EMAIL, "email@domain.l"));
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {

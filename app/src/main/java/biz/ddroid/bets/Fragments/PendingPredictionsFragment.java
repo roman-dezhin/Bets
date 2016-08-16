@@ -71,11 +71,6 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
             if (mMatches.isEmpty()) {
                 predictServices.pending(new AsyncHttpResponseHandler() {
                     @Override
-                    public void onFinish() {
-                        Log.v(TAG, "onFinish");
-                    }
-
-                    @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         Log.v(TAG, new String(responseBody));
                         parseMatches(responseBody);

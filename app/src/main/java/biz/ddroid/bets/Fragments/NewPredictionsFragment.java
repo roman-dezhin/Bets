@@ -72,11 +72,6 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
             if (mMatches.isEmpty()) {
                 predictServices.newMatches(new AsyncHttpResponseHandler() {
                     @Override
-                    public void onFinish() {
-                        Log.v(TAG, "onFinish");
-                    }
-
-                    @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         Log.v(TAG, new String(responseBody));
                         parseMatches(responseBody);
