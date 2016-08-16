@@ -54,11 +54,11 @@ public class CompletedPredictionsFragment extends BasePredictionsFragment {
         Log.v(TAG, "onCreateView: ");
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        adapter = new CompletedPredictionsContentAdapter(getmPredictionsStatus());
+        adapter = new CompletedPredictionsContentAdapter(getPredictionsStatus());
         adapter.setListener(new CompletedPredictionsContentAdapter.Listener() {
             @Override
-            public void onClick(Match match) {
-                onMatchSelected(match);
+            public void onClick(Match match, int matchStatus) {
+                onMatchSelected(match, matchStatus);
             }
         });
         recyclerView.setAdapter(adapter);

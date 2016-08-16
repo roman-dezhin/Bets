@@ -79,11 +79,14 @@ public class BetsActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Match match) {
+    public void onFragmentInteraction(Match match, int matchStatus) {
         Toast.makeText(BetsActivity.this, Integer.toString(match.getId()), Toast.LENGTH_SHORT).show();
-        DialogFragment newFragment = CreatePredictionFragment.newInstance(match);
-        newFragment.show(getSupportFragmentManager(), "dialog");
-
+        switch (matchStatus) {
+            case PREDICTIONS_STATUS_NEW:
+                DialogFragment newFragment = CreatePredictionFragment.newInstance(match);
+                newFragment.show(getSupportFragmentManager(), "dialog");
+                break;
+        }
     }
 
     @Override

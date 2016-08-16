@@ -44,13 +44,13 @@ public abstract class BasePredictionsFragment extends Fragment {
 
     }
 
-    public void onMatchSelected(Match match) {
+    public void onMatchSelected(Match match, int matchStatus) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(match);
+            mListener.onFragmentInteraction(match, matchStatus);
         }
     }
 
-    public int getmPredictionsStatus() {
+    public int getPredictionsStatus() {
         return mPredictionsStatus;
     }
 
@@ -82,6 +82,6 @@ public abstract class BasePredictionsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Match match);
+        void onFragmentInteraction(Match match, int matchStatus);
     }
 }

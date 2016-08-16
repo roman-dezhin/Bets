@@ -24,7 +24,7 @@ public class CompletedPredictionsContentAdapter extends RecyclerView.Adapter<Com
     }
 
     public interface Listener {
-         void onClick(Match match);
+         void onClick(Match match, int matchStatus);
     }
 
     public void setListener(Listener listener) {
@@ -81,7 +81,7 @@ public class CompletedPredictionsContentAdapter extends RecyclerView.Adapter<Com
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.onClick(match);
+                    mListener.onClick(match, mMatchesStatus);
                 }
             }
         });

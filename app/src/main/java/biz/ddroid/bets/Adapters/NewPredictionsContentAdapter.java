@@ -17,14 +17,14 @@ import biz.ddroid.bets.pojo.Match;
 public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredictionsContentAdapter.ViewHolder>  {
     private ArrayList<Match> mMatches = new ArrayList<>();
     private Listener mListener;
-    private int mMatchesStatus;
+    private int mMatchStatus;
 
     public NewPredictionsContentAdapter(int status) {
-        this.mMatchesStatus = status;
+        this.mMatchStatus = status;
     }
 
     public interface Listener {
-         void onClick(Match match);
+         void onClick(Match match, int matchStatus);
     }
 
     public void setListener(Listener listener) {
@@ -72,7 +72,7 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.onClick(match);
+                    mListener.onClick(match, mMatchStatus);
                 }
             }
         });
