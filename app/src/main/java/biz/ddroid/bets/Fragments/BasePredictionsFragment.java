@@ -21,11 +21,10 @@ import biz.ddroid.bets.utils.SharedPrefs;
 public abstract class BasePredictionsFragment extends Fragment {
 
     protected static final String ARG_BETS_STATUS = "predictions_status";
-    protected int mPredictionsStatus;
+    private int mPredictionsStatus;
     private OnFragmentInteractionListener mListener;
     protected ArrayList<Match> mMatches = new ArrayList<>();
     protected PredictServices predictServices;
-
 
     public BasePredictionsFragment() {
         // Required empty public constructor
@@ -36,6 +35,9 @@ public abstract class BasePredictionsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mPredictionsStatus = getArguments().getInt(ARG_BETS_STATUS);
+        }
         ServicesClient servicesClient = BetApplication.servicesClient;
         servicesClient.setToken(getActivity().getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
         predictServices = new PredictServices(servicesClient);
@@ -46,6 +48,10 @@ public abstract class BasePredictionsFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(match);
         }
+    }
+
+    public int getmPredictionsStatus() {
+        return mPredictionsStatus;
     }
 
     @Override

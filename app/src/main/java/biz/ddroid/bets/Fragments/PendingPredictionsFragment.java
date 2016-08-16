@@ -48,20 +48,12 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mPredictionsStatus = getArguments().getInt(ARG_BETS_STATUS);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(TAG, "onCreateView: ");
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
-        adapter = new PendingPredictionsContentAdapter(mPredictionsStatus);
+        adapter = new PendingPredictionsContentAdapter(getmPredictionsStatus());
         adapter.setListener(new PendingPredictionsContentAdapter.Listener() {
             @Override
             public void onClick(Match match) {
