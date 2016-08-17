@@ -42,7 +42,6 @@ public class CreatePredictionFragment extends DialogFragment {
      * @param match Match.
      * @return A new instance of fragment CreatePredictionFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static CreatePredictionFragment newInstance(Match match) {
         CreatePredictionFragment fragment = new CreatePredictionFragment();
         Bundle args = new Bundle();
@@ -81,17 +80,19 @@ public class CreatePredictionFragment extends DialogFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), numberPicker_home_team.getValue() + " : " + numberPicker_visitor_team.getValue(), Toast.LENGTH_SHORT).show();
+                onPredictionButtonPressed(mMatch.getId(), numberPicker_home_team.getValue(), numberPicker_visitor_team.getValue());
+                //Toast.makeText(getActivity(), numberPicker_home_team.getValue() + " : " + numberPicker_visitor_team.getValue(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onPredictionButtonPressed(int matchId, int team_home_prediction, int team_visitor_prediction) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction(matchId, team_home_prediction, team_visitor_prediction);
+            dismiss();
         }
     }
 
@@ -123,7 +124,6 @@ public class CreatePredictionFragment extends DialogFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(int matchId, int team_home_prediction, int team_visitor_prediction);
     }
 }

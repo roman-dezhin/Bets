@@ -16,9 +16,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.adapters.CompletedPredictionsContentAdapter;
 import biz.ddroid.bets.pojo.Match;
+import biz.ddroid.bets.rest.PredictServices;
+import biz.ddroid.bets.rest.ServicesClient;
+import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -70,18 +74,7 @@ public class CompletedPredictionsFragment extends BasePredictionsFragment {
             adapter.setMatches(mMatches);
         } else {
             if (mMatches.isEmpty()) {
-                predictServices.completed(new AsyncHttpResponseHandler() {
-                   @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        Log.v(TAG, new String(responseBody));
-                        parseMatches(responseBody);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        Log.v(TAG, new String(responseBody));
-                    }
-                });
+                refreshMatches(servicesClient);
             } else {
                 adapter.setMatches(mMatches);
             }
@@ -95,7 +88,25 @@ public class CompletedPredictionsFragment extends BasePredictionsFragment {
         outState.putParcelableArrayList(STATE_MATCHES, mMatches);
     }
 
+    @Override
+    public void refreshMatches(ServicesClient servicesClient) {
+       predictServices = new PredictServices(servicesClient);
+        predictServices.completed(new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.v(TAG, new String(responseBody));
+                parseMatches(responseBody);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.v(TAG, new String(responseBody));
+            }
+        });
+    }
+
     protected void parseMatches(byte[] responseBody) {
+        mMatches.clear();
         try {
             JSONArray response = new JSONArray(new String(responseBody));
             for (int i=0; i < response.length(); i++) {

@@ -25,6 +25,7 @@ public abstract class BasePredictionsFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     protected ArrayList<Match> mMatches = new ArrayList<>();
     protected PredictServices predictServices;
+    protected ServicesClient servicesClient;
 
     public BasePredictionsFragment() {
         // Required empty public constructor
@@ -32,16 +33,16 @@ public abstract class BasePredictionsFragment extends Fragment {
 
     abstract protected void parseMatches(byte[] responseBody);
 
+    abstract public void refreshMatches(ServicesClient servicesClient);
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mPredictionsStatus = getArguments().getInt(ARG_BETS_STATUS);
         }
-        ServicesClient servicesClient = BetApplication.servicesClient;
+        servicesClient = BetApplication.getServicesClient();
         servicesClient.setToken(getActivity().getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
-        predictServices = new PredictServices(servicesClient);
-
     }
 
     public void onMatchSelected(Match match, int matchStatus) {

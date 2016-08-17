@@ -46,13 +46,13 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
-    String TAG = "LoginActivity";
+    private String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        servicesClient = BetApplication.servicesClient;
+        servicesClient = BetApplication.getServicesClient();
         servicesClient.setCookieStore(new PersistentCookieStore(getApplicationContext()));
         userServices = new UserServices(servicesClient);
 

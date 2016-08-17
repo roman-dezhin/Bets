@@ -20,6 +20,10 @@ public class PredictServices {
         client.get("predict", null, responseHandler);
     }
 
+    public void create(JSONObject prediction, AsyncHttpResponseHandler responseHandler) {
+        client.post("predict", prediction, responseHandler);
+    }
+
     public void newMatches(AsyncHttpResponseHandler responseHandler){
         client.post("predict/new", new JSONObject(), responseHandler);
     }

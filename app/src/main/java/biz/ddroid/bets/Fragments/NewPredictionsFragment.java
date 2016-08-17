@@ -1,6 +1,8 @@
 package biz.ddroid.bets.fragments;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +17,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.adapters.NewPredictionsContentAdapter;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.R;
+import biz.ddroid.bets.rest.PredictServices;
+import biz.ddroid.bets.rest.ServicesClient;
+import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -36,9 +42,59 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
 
     private String TAG = "NewPredictionsFragment";
 
-    public NewPredictionsFragment() {
-        // Required empty public constructor
-    }
+        @Override
+        public void onResume() {
+            super.onResume();
+            Log.v(TAG, "onResume: ");
+        }
+        @Override
+        public void onStart() {
+            super.onStart();
+            Log.v(TAG, "onStart: ");
+
+        }
+        @Override
+        public void onPause() {
+            super.onPause();
+            Log.v(TAG, "onPause: ");
+
+        }
+        @Override
+        public void onStop() {
+            super.onStop();
+            Log.v(TAG, "onStop: ");
+
+        }
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            Log.v(TAG, "onDestroy: ");
+
+        }
+        @Override
+        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            Log.v(TAG, "onActivityCreated: ");
+
+        }
+        @Override
+        public void onDestroyView() {
+            super.onDestroyView();
+            Log.v(TAG, "onDestroyView: ");
+
+        }
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+            super.onConfigurationChanged(newConfig);
+            Log.v(TAG, "onConfigurationChanged: ");
+
+        }
+        @Override
+        public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+            super.onViewStateRestored(savedInstanceState);
+            Log.v(TAG, "onViewStateRestored: ");
+
+        }
 
     public static NewPredictionsFragment newInstance(int betsStatus) {
         NewPredictionsFragment fragment = new NewPredictionsFragment();
@@ -70,23 +126,29 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
             adapter.setMatches(mMatches);
         } else {
             if (mMatches.isEmpty()) {
-                predictServices.newMatches(new AsyncHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        Log.v(TAG, new String(responseBody));
-                        parseMatches(responseBody);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        Log.v(TAG, new String(responseBody));
-                    }
-                });
+                refreshMatches(servicesClient);
             } else {
                 adapter.setMatches(mMatches);
             }
         }
         return recyclerView;
+    }
+
+    @Override
+    public void refreshMatches(ServicesClient servicesClient) {
+        predictServices = new PredictServices(servicesClient);
+        predictServices.newMatches(new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.v(TAG, new String(responseBody));
+                parseMatches(responseBody);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.v(TAG, new String(responseBody));
+            }
+        });
     }
 
     @Override
@@ -96,6 +158,7 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
     }
 
     protected void parseMatches(byte[] responseBody) {
+        mMatches.clear();
         try {
             JSONArray response = new JSONArray(new String(responseBody));
             for (int i=0; i < response.length(); i++) {
