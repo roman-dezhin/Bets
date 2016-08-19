@@ -1,7 +1,8 @@
 package biz.ddroid.bets.activities;
 
-import android.net.Uri;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -18,10 +19,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -29,7 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.fragments.BasePredictionsFragment;
@@ -49,7 +52,6 @@ public class BetsActivity extends AppCompatActivity
         CreatePredictionFragment.OnFragmentInteractionListener {
 
     private Adapter adapter;
-    private ViewPager viewPager;
     private final static int PREDICTIONS_STATUS_NEW = 0;
     private final static int PREDICTIONS_STATUS_PENDING = 1;
     private final static int PREDICTIONS_STATUS_COMPLETED = 2;
@@ -59,12 +61,14 @@ public class BetsActivity extends AppCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG, "onCreate: " + this.toString());
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Setting ViewPager for each Tabs
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         // Set Tabs inside Toolbar
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
@@ -93,11 +97,15 @@ public class BetsActivity extends AppCompatActivity
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(NewPredictionsFragment.newInstance(PREDICTIONS_STATUS_NEW), getString(R.string.tab_matches_new));
-        adapter.addFragment(PendingPredictionsFragment.newInstance(PREDICTIONS_STATUS_PENDING), getString(R.string.tab_matches_pending));
-        adapter.addFragment(CompletedPredictionsFragment.newInstance(PREDICTIONS_STATUS_COMPLETED), getString(R.string.tab_matches_completed));
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        List<String> titleList = new ArrayList<>();
+        titleList.add(getString(R.string.tab_matches_new));
+        titleList.add(getString(R.string.tab_matches_pending));
+        titleList.add(getString(R.string.tab_matches_completed));
+        adapter = new Adapter(fragmentManager, titleList);
+        Log.v(TAG, "setupViewPager: adapter: " + adapter.toString());
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(2);
     }
 
     @Override
@@ -130,11 +138,12 @@ public class BetsActivity extends AppCompatActivity
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
                 Toast.makeText(BetsActivity.this, "Success predict", Toast.LENGTH_SHORT).show();
-                NewPredictionsFragment newPredictionsFragment = (NewPredictionsFragment) adapter.getItem(0);
+                NewPredictionsFragment newPredictionsFragment = (NewPredictionsFragment) adapter.getFragment(PREDICTIONS_STATUS_NEW);
+                Log.v(TAG, "onFragmentInteraction: newPredictionsFragment: " + newPredictionsFragment.toString());
                 newPredictionsFragment.refreshMatches(servicesClient);
-                PendingPredictionsFragment pendingPredictionsFragment = (PendingPredictionsFragment) adapter.getItem(1);
+                PendingPredictionsFragment pendingPredictionsFragment = (PendingPredictionsFragment) adapter.getFragment(PREDICTIONS_STATUS_PENDING);
+                Log.v(TAG, "onFragmentInteraction: pendingPredictionsFragment: " + pendingPredictionsFragment.toString());
                 pendingPredictionsFragment.refreshMatches(servicesClient);
-                //adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -157,32 +166,53 @@ public class BetsActivity extends AppCompatActivity
         });
     }
 
-    static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+    public class Adapter extends FragmentPagerAdapter {
+        private List<String> mFragmentTitleList = new ArrayList<>();
+        private Map<Integer, String> mFragmentTags;
+        private FragmentManager mFragmentManager;
 
-        public Adapter(FragmentManager manager) {
+        public Adapter(FragmentManager manager, List<String> titleList) {
             super(manager);
+            mFragmentManager = manager;
+            mFragmentTags = new HashMap<>();
+            mFragmentTitleList = titleList;
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentTitleList.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return mFragmentList.get(position);
+            switch (position){
+                case PREDICTIONS_STATUS_NEW:
+                    return NewPredictionsFragment.newInstance(PREDICTIONS_STATUS_NEW);
+                case PREDICTIONS_STATUS_PENDING:
+                    return PendingPredictionsFragment.newInstance(PREDICTIONS_STATUS_PENDING);
+                case PREDICTIONS_STATUS_COMPLETED:
+                    return CompletedPredictionsFragment.newInstance(PREDICTIONS_STATUS_COMPLETED);
+            }
+            return null;
         }
-
-        /*@Override
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }*/
 
         @Override
-        public int getCount() {
-            return mFragmentList.size();
+        public Object instantiateItem(ViewGroup container, int position) {
+            Object obj = super.instantiateItem(container, position);
+            if (obj instanceof Fragment) {
+                // record the fragment tag here.
+                Fragment f = (Fragment) obj;
+                String tag = f.getTag();
+                mFragmentTags.put(position, tag);
+            }
+            return obj;
         }
 
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
+        public Fragment getFragment(int position) {
+            String tag = mFragmentTags.get(position);
+            if (tag == null)
+                return null;
+            return mFragmentManager.findFragmentByTag(tag);
         }
 
         @Override
@@ -246,5 +276,75 @@ public class BetsActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.v(TAG, "onStop: " + this.toString());
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Log.v(TAG, "onPostResume: " + this.toString());
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.v(TAG, "onResume: " + this.toString());
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.v(TAG, "onPause: " + this.toString());
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.v(TAG, "onStart: " + this.toString());
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "onDestroy: " + this.toString());
+
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.v(TAG, "onConfigurationChanged: " + this.toString());
+
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        Log.v(TAG, "onPostCreate: " + this.toString());
+
+    }
+
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+        Log.v(TAG, "onContentChanged: " + this.toString());
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.v(TAG, "onSaveInstanceState: " + this.toString());
+
     }
 }

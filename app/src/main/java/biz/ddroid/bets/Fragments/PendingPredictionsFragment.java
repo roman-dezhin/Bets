@@ -15,13 +15,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.adapters.PendingPredictionsContentAdapter;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
-import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -33,6 +31,7 @@ import cz.msebera.android.httpclient.Header;
  * create an instance of this fragment.
  */
 public class PendingPredictionsFragment extends BasePredictionsFragment {
+
     private static final String STATE_MATCHES = "state_pending_predictions";
 
     private PendingPredictionsContentAdapter adapter;
@@ -94,6 +93,7 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.v(TAG, new String(responseBody));
+                Log.v(TAG, "refreshMatches: this " + this.toString());
                 parseMatches(responseBody);
             }
 

@@ -1,8 +1,11 @@
 package biz.ddroid.bets.fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -26,6 +29,7 @@ public abstract class BasePredictionsFragment extends Fragment {
     protected ArrayList<Match> mMatches = new ArrayList<>();
     protected PredictServices predictServices;
     protected ServicesClient servicesClient;
+    private String TAG = "BasePredictionsFragment";
 
     public BasePredictionsFragment() {
         // Required empty public constructor
@@ -84,5 +88,59 @@ public abstract class BasePredictionsFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Match match, int matchStatus);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(TAG, "onResume: " + this.toString());
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(TAG, "onStart: " + this.toString());
+
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.v(TAG, "onPause: " + this.toString());
+
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.v(TAG, "onStop: " + this.toString());
+
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "onDestroy: " + this.toString());
+
+    }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.v(TAG, "onActivityCreated: " + this.toString());
+
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.v(TAG, "onDestroyView: " + this.toString());
+
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.v(TAG, "onConfigurationChanged: " + this.toString());
+
+    }
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.v(TAG, "onViewStateRestored: " + this.toString());
+
     }
 }
