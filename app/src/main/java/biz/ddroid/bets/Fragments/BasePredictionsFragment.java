@@ -15,15 +15,10 @@ import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.SharedPrefs;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BasePredictionsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
 public abstract class BasePredictionsFragment extends Fragment {
 
     protected static final String ARG_BETS_STATUS = "predictions_status";
+
     private int mPredictionsStatus;
     private OnFragmentInteractionListener mListener;
     protected ArrayList<Match> mMatches = new ArrayList<>();

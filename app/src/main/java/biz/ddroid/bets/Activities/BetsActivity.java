@@ -92,7 +92,7 @@ public class BetsActivity extends AppCompatActivity
         TextView header_user_email = (TextView) header.findViewById(R.id.header_user_email);
         if (header_user_email != null) {
             header_user_email.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
-                    .getString(SharedPrefs.EMAIL, "email@domain.l"));
+                    .getString(SharedPrefs.EMAIL, "email@domain.tld"));
         }
     }
 
@@ -123,9 +123,9 @@ public class BetsActivity extends AppCompatActivity
     public void onFragmentInteraction(int matchId, int team_home_prediction, int team_visitor_prediction) {
         JSONObject prediction = new JSONObject();
         try {
-            prediction.put("mid", Integer.toString(matchId));
-            prediction.put("team_home_score", Integer.toString(team_home_prediction));
-            prediction.put("team_visitor_score", Integer.toString(team_visitor_prediction));
+            prediction.put(PredictServices.MATCH_ID, Integer.toString(matchId));
+            prediction.put(PredictServices.TEAM_HOME_SCORE, Integer.toString(team_home_prediction));
+            prediction.put(PredictServices.TEAM_VISITOR_SCORE, Integer.toString(team_visitor_prediction));
         } catch (JSONException e) {
             e.printStackTrace();
         }

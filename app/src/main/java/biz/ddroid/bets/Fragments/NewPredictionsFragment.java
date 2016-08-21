@@ -8,12 +8,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 import biz.ddroid.bets.adapters.NewPredictionsContentAdapter;
 import biz.ddroid.bets.pojo.Match;
@@ -22,21 +26,20 @@ import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import cz.msebera.android.httpclient.Header;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NewPredictionsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link NewPredictionsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class NewPredictionsFragment extends BasePredictionsFragment {
 
-    private static final String STATE_MATCHES = "state_new_predictions";
+    private static final String STATE_MATCHES = "state_matches";
+    private static final String STATE_REQUEST_TIME = "state_request_time";
 
     private NewPredictionsContentAdapter adapter;
+    private RecyclerView recyclerView;
+    private TextView requestDateTime;
+    private TextView dataInfo;
+    private Date requestTime;
+    private boolean isResponseEmpty = true;
+    private boolean isRequestEnd = false;
 
-    private String TAG = "NewPredictionsFragment";
+    private static final String TAG = "NewPredictionsFragment";
 
     public NewPredictionsFragment() {
         // Required empty public constructor
@@ -54,8 +57,11 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(TAG, "onCreateView: ");
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_predictions, container, false);
+        rootView.setTag(TAG);
+        requestDateTime = (TextView) rootView.findViewById(R.id.request_datetime);
+        dataInfo = (TextView) rootView.findViewById(R.id.new_predictions_info);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         adapter = new NewPredictionsContentAdapter(getPredictionsStatus());
         adapter.setListener(new NewPredictionsContentAdapter.Listener() {
             @Override
@@ -69,15 +75,30 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
 
         if (savedInstanceState != null) {
             mMatches = savedInstanceState.getParcelableArrayList(STATE_MATCHES);
+            if (mMatches.isEmpty()) {
+                isRequestEnd = true;
+                isResponseEmpty = true;
+            }
+            requestTime = new Date();
+            requestTime.setTime(savedInstanceState.getLong(STATE_REQUEST_TIME));
             adapter.setMatches(mMatches);
         } else {
+            requestTime = new Date();
             if (mMatches.isEmpty()) {
                 refreshMatches(servicesClient);
             } else {
                 adapter.setMatches(mMatches);
             }
         }
-        return recyclerView;
+        updateUI();
+        return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STATE_MATCHES, mMatches);
+        outState.putLong(STATE_REQUEST_TIME, requestTime.getTime());
     }
 
     @Override
@@ -87,7 +108,8 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.v(TAG, new String(responseBody));
-                Log.v(TAG, "refreshMatches: this " + NewPredictionsFragment.this.toString());
+                requestTime = new Date();
+                isRequestEnd = true;
                 parseMatches(responseBody);
             }
 
@@ -98,12 +120,6 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
         });
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(STATE_MATCHES, mMatches);
-    }
-
     protected void parseMatches(byte[] responseBody) {
         mMatches.clear();
         try {
@@ -111,22 +127,43 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
             for (int i=0; i < response.length(); i++) {
                 JSONObject jsonMatch = response.getJSONObject(i);
                 Match match = new Match(
-                        jsonMatch.getInt("mid"),
-                        jsonMatch.getString("date"),
-                        jsonMatch.getInt("tid"),
-                        jsonMatch.getString("tournament_name"),
-                        jsonMatch.getString("stage"),
-                        jsonMatch.getString("team_home"),
-                        jsonMatch.getString("team_visitor"),
-                        jsonMatch.getString("team_home_icon"),
-                        jsonMatch.getString("team_visitor_icon"),
-                        jsonMatch.getString("city"),
-                        jsonMatch.getInt("predictions_count"));
+                        jsonMatch.getInt(PredictServices.MATCH_ID),
+                        jsonMatch.getString(PredictServices.DATE),
+                        jsonMatch.getInt(PredictServices.TOURNAMENT_ID),
+                        jsonMatch.getString(PredictServices.TOURNAMENT_NAME),
+                        jsonMatch.getString(PredictServices.STAGE),
+                        jsonMatch.getString(PredictServices.TEAM_HOME),
+                        jsonMatch.getString(PredictServices.TEAM_VISITOR),
+                        jsonMatch.getString(PredictServices.TEAM_HOME_ICON),
+                        jsonMatch.getString(PredictServices.TEAM_VISITOR_ICON),
+                        jsonMatch.getString(PredictServices.CITY),
+                        jsonMatch.getInt(PredictServices.PREDICTIONS_COUNT));
                 mMatches.add(match);
+                isResponseEmpty = false;
             }
             adapter.setMatches(mMatches);
+            updateUI();
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updateUI() {
+        if (adapter.getItemCount() == 0 && (!isRequestEnd || isRequestEnd && !isResponseEmpty)) {
+            dataInfo.setVisibility(View.VISIBLE);
+            requestDateTime.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        } else if (adapter.getItemCount() == 0 && isRequestEnd && isResponseEmpty) {
+            dataInfo.setVisibility(View.VISIBLE);
+            dataInfo.setText(R.string.no_data);
+            requestDateTime.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            dataInfo.setVisibility(View.GONE);
+            requestDateTime.setVisibility(View.VISIBLE);
+            requestDateTime.setText(DateFormat.getTimeInstance().format(requestTime));
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 }

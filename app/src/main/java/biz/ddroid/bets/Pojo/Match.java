@@ -3,7 +3,13 @@ package biz.ddroid.bets.pojo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.json.JSONArray;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import biz.ddroid.bets.rest.PredictServices;
 
 public class Match implements Parcelable{
 
@@ -143,8 +149,16 @@ public class Match implements Parcelable{
 
     public String getDateTime() {
 
-        // TODO: convert datetime in user timezone
-        return dateTime;
+        SimpleDateFormat df = new SimpleDateFormat(PredictServices.DATETIME_FORMAT, Locale.getDefault());
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = null;
+        try {
+            date = df.parse(dateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        df.setTimeZone(TimeZone.getDefault());
+        return df.format(date);
     }
 
     public int getTourId() {

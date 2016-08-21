@@ -8,12 +8,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.adapters.PendingPredictionsContentAdapter;
@@ -22,19 +26,18 @@ import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import cz.msebera.android.httpclient.Header;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PendingPredictionsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PendingPredictionsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PendingPredictionsFragment extends BasePredictionsFragment {
 
-    private static final String STATE_MATCHES = "state_pending_predictions";
+    private static final String STATE_MATCHES = "state_matches";
+    private static final String STATE_REQUEST_TIME = "state_request_time";
 
     private PendingPredictionsContentAdapter adapter;
+    private RecyclerView recyclerView;
+    private TextView requestDateTime;
+    private TextView dataInfo;
+    private Date requestTime;
+    private boolean isResponseEmpty = true;
+    private boolean isRequestEnd = false;
 
     private String TAG = "PendingPredictionsFragment";
 
@@ -54,8 +57,11 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(TAG, "onCreateView: ");
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_predictions, container, false);
+        rootView.setTag(TAG);
+        requestDateTime = (TextView) rootView.findViewById(R.id.request_datetime);
+        dataInfo = (TextView) rootView.findViewById(R.id.new_predictions_info);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         adapter = new PendingPredictionsContentAdapter(getPredictionsStatus());
         adapter.setListener(new PendingPredictionsContentAdapter.Listener() {
             @Override
@@ -69,21 +75,30 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
 
         if (savedInstanceState != null) {
             mMatches = savedInstanceState.getParcelableArrayList(STATE_MATCHES);
+            if (mMatches.isEmpty()) {
+                isRequestEnd = true;
+                isResponseEmpty = true;
+            }
+            requestTime = new Date();
+            requestTime.setTime(savedInstanceState.getLong(STATE_REQUEST_TIME));
             adapter.setMatches(mMatches);
         } else {
+            requestTime = new Date();
             if (mMatches.isEmpty()) {
                 refreshMatches(servicesClient);
             } else {
                 adapter.setMatches(mMatches);
             }
         }
-        return recyclerView;
+        updateUI();
+        return rootView;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STATE_MATCHES, mMatches);
+        outState.putLong(STATE_REQUEST_TIME, requestTime.getTime());
     }
 
     @Override
@@ -93,7 +108,8 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.v(TAG, new String(responseBody));
-                Log.v(TAG, "refreshMatches: this " + this.toString());
+                requestTime = new Date();
+                isRequestEnd = true;
                 parseMatches(responseBody);
             }
 
@@ -110,32 +126,53 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
             JSONArray response = new JSONArray(new String(responseBody));
             for (int i = 0; i < response.length(); i++) {
                 JSONObject jsonMatch = response.getJSONObject(i);
-                JSONArray friendsPredictionsArray = jsonMatch.getJSONArray("friends_predictions");
+                JSONArray friendsPredictionsArray = jsonMatch.getJSONArray(PredictServices.FRIENDS_PREDICTIONS);
                 String friendPredictionsString = "";
                 for (int j = 0; j < friendsPredictionsArray.length(); j++) {
-                    friendPredictionsString += "\n" + friendsPredictionsArray.getJSONObject(j).getString("user_name")
-                    + ": " + friendsPredictionsArray.getJSONObject(j).getString("team_home_score")
-                            + " : " + friendsPredictionsArray.getJSONObject(j).getString("team_visitor_score");
+                    friendPredictionsString += "\n" + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.USER_NAME)
+                    + ": " + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.TEAM_HOME_PREDICTION)
+                            + " : " + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.TEAM_VISITOR_PREDICTION);
                 }
                 Match match = new Match(
-                        jsonMatch.getInt("mid"),
-                        jsonMatch.getString("date"),
-                        jsonMatch.getInt("tid"),
-                        jsonMatch.getString("tournament_name"),
-                        jsonMatch.getString("stage"),
-                        jsonMatch.getString("team_home"),
-                        jsonMatch.getString("team_visitor"),
-                        jsonMatch.getInt("team_home_prediction"),
-                        jsonMatch.getInt("team_visitor_prediction"),
-                        jsonMatch.getString("team_home_icon"),
-                        jsonMatch.getString("team_visitor_icon"),
-                        jsonMatch.getString("city"),
+                        jsonMatch.getInt(PredictServices.MATCH_ID),
+                        jsonMatch.getString(PredictServices.DATE),
+                        jsonMatch.getInt(PredictServices.TOURNAMENT_ID),
+                        jsonMatch.getString(PredictServices.TOURNAMENT_NAME),
+                        jsonMatch.getString(PredictServices.STAGE),
+                        jsonMatch.getString(PredictServices.TEAM_HOME),
+                        jsonMatch.getString(PredictServices.TEAM_VISITOR),
+                        jsonMatch.getInt(PredictServices.TEAM_HOME_PREDICTION),
+                        jsonMatch.getInt(PredictServices.TEAM_VISITOR_PREDICTION),
+                        jsonMatch.getString(PredictServices.TEAM_HOME_ICON),
+                        jsonMatch.getString(PredictServices.TEAM_VISITOR_ICON),
+                        jsonMatch.getString(PredictServices.CITY),
                        friendPredictionsString);
                 mMatches.add(match);
+                isResponseEmpty = false;
             }
             adapter.setMatches(mMatches);
+            updateUI();
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updateUI() {
+        if (adapter.getItemCount() == 0 && (!isRequestEnd || isRequestEnd && !isResponseEmpty)) {
+            dataInfo.setVisibility(View.VISIBLE);
+            requestDateTime.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        } else if (adapter.getItemCount() == 0 && isRequestEnd && isResponseEmpty) {
+            dataInfo.setVisibility(View.VISIBLE);
+            dataInfo.setText(R.string.no_data);
+            requestDateTime.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            dataInfo.setVisibility(View.GONE);
+            requestDateTime.setVisibility(View.VISIBLE);
+            requestDateTime.setText(DateFormat.getTimeInstance().format(requestTime));
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 }
