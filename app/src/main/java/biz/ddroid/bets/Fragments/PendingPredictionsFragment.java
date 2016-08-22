@@ -108,7 +108,8 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
                 JSONArray friendsPredictionsArray = jsonMatch.getJSONArray(PredictServices.FRIENDS_PREDICTIONS);
                 String friendPredictionsString = "";
                 for (int j = 0; j < friendsPredictionsArray.length(); j++) {
-                    friendPredictionsString += "\n" + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.USER_NAME)
+                    if (j > 0) friendPredictionsString += "\n";
+                    friendPredictionsString += friendsPredictionsArray.getJSONObject(j).getString(PredictServices.USER_NAME)
                     + ": " + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.TEAM_HOME_PREDICTION)
                             + " : " + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.TEAM_VISITOR_PREDICTION);
                 }

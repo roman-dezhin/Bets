@@ -108,10 +108,11 @@ public class CompletedPredictionsFragment extends BasePredictionsFragment {
                 JSONArray friendsPredictionsArray = jsonMatch.getJSONArray(PredictServices.FRIENDS_PREDICTIONS_AND_POINTS);
                 String friendPredictionsString = "";
                 for (int j = 0; j < friendsPredictionsArray.length(); j++) {
-                    friendPredictionsString += "\n" + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.USER_NAME)
+                    if (j > 0) friendPredictionsString += "\n";
+                    friendPredictionsString += friendsPredictionsArray.getJSONObject(j).getString(PredictServices.USER_NAME)
                             + ": " + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.TEAM_HOME_PREDICTION)
                             + " : " + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.TEAM_VISITOR_PREDICTION)
-                    + "  " + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.POINTS) + "pts.";
+                    + "  " + friendsPredictionsArray.getJSONObject(j).getString(PredictServices.POINTS) + " pts";
                 }
                 Match match = new Match(
                         jsonMatch.getInt(PredictServices.MATCH_ID),

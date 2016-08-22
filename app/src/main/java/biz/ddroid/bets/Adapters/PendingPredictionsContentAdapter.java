@@ -60,7 +60,7 @@ public class PendingPredictionsContentAdapter extends RecyclerView.Adapter<Pendi
         dateTime.setText(match.getDateTime());
 
         TextView friendsPredictions = (TextView) cardView.findViewById(R.id.friends_predictions);
-        friendsPredictions.setText(cardView.getContext().getString(R.string.friendsPredictions) + match.getFriendsPredictions());
+        friendsPredictions.setText(match.getFriendsPredictions());
 
         TextView nameTeam1 = (TextView) cardView.findViewById(R.id.name_team1);
         nameTeam1.setText(match.getTeam1());
