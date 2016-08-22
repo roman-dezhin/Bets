@@ -49,9 +49,11 @@ import cz.msebera.android.httpclient.Header;
 
 public class BetsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, BasePredictionsFragment.OnFragmentInteractionListener,
-        CreatePredictionFragment.OnFragmentInteractionListener {
+        CreatePredictionFragment.OnFragmentInteractionListener, BasePredictionsFragment.OnFragmentRefreshListener {
 
     private Adapter adapter;
+    private ViewPager viewPager;
+    private MenuItem menuItem;
     private final static int PREDICTIONS_STATUS_NEW = 0;
     private final static int PREDICTIONS_STATUS_PENDING = 1;
     private final static int PREDICTIONS_STATUS_COMPLETED = 2;
@@ -68,7 +70,7 @@ public class BetsActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         // Setting ViewPager for each Tabs
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         // Set Tabs inside Toolbar
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
@@ -157,6 +159,14 @@ public class BetsActivity extends AppCompatActivity
         });
     }
 
+    @Override
+    public void onFragmentRefreshed() {
+        if (menuItem != null) {
+            menuItem.collapseActionView();
+            menuItem.setActionView(null);
+        }
+    }
+
     public class Adapter extends FragmentPagerAdapter {
         private List<String> mFragmentTitleList = new ArrayList<>();
         private Map<Integer, String> mFragmentTags;
@@ -241,7 +251,35 @@ public class BetsActivity extends AppCompatActivity
             return true;
         }
 
+        if (id == R.id.action_refresh) {
+            Log.v(TAG, "action_refresh: " + viewPager.getCurrentItem());
+            menuItem = item;
+            menuItem.setActionView(R.layout.progressbar);
+            menuItem.expandActionView();
+            refreshFragmentData(viewPager.getCurrentItem());
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void refreshFragmentData(int tabId) {
+        ServicesClient servicesClient = BetApplication.getServicesClient();
+        servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
+        switch (tabId){
+            case PREDICTIONS_STATUS_NEW:
+                NewPredictionsFragment newPredictionsFragment = (NewPredictionsFragment) adapter.getFragment(PREDICTIONS_STATUS_NEW);
+                newPredictionsFragment.refreshMatches(servicesClient);
+                break;
+            case PREDICTIONS_STATUS_PENDING:
+                PendingPredictionsFragment pendingPredictionsFragment = (PendingPredictionsFragment) adapter.getFragment(PREDICTIONS_STATUS_PENDING);
+                pendingPredictionsFragment.refreshMatches(servicesClient);
+                break;
+            case PREDICTIONS_STATUS_COMPLETED:
+                CompletedPredictionsFragment completedPredictionsFragment = (CompletedPredictionsFragment) adapter.getFragment(PREDICTIONS_STATUS_COMPLETED);
+                completedPredictionsFragment.refreshMatches(servicesClient);
+                break;
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

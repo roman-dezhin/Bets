@@ -96,6 +96,11 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 Log.v(TAG, new String(responseBody));
             }
+
+            @Override
+            public void onFinish() {
+                onFragmentRefreshed();
+            }
         });
     }
 

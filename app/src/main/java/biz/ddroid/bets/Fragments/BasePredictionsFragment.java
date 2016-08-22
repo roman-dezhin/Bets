@@ -29,6 +29,7 @@ public abstract class BasePredictionsFragment extends Fragment {
 
     private int mPredictionsStatus;
     private OnFragmentInteractionListener mListener;
+    private OnFragmentRefreshListener mFragmentRefreshListener;
     protected ArrayList<Match> mMatches = new ArrayList<>();
     protected PredictServices predictServices;
     protected ServicesClient servicesClient;
@@ -90,6 +91,12 @@ public abstract class BasePredictionsFragment extends Fragment {
         }
     }
 
+    public void onFragmentRefreshed() {
+        if (mFragmentRefreshListener != null) {
+            mFragmentRefreshListener.onFragmentRefreshed();
+        }
+    }
+
     public int getPredictionsStatus() {
         return mPredictionsStatus;
     }
@@ -103,6 +110,12 @@ public abstract class BasePredictionsFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        if (context instanceof OnFragmentRefreshListener) {
+            mFragmentRefreshListener = (OnFragmentRefreshListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentRefreshListener");
+        }
     }
 
     @Override
@@ -111,18 +124,12 @@ public abstract class BasePredictionsFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Match match, int matchStatus);
+    }
+
+    public interface OnFragmentRefreshListener {
+        void onFragmentRefreshed();
     }
 
     @Override
