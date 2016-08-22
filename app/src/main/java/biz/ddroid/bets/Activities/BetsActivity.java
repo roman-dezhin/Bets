@@ -110,7 +110,6 @@ public class BetsActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Match match, int matchStatus) {
-        Toast.makeText(BetsActivity.this, Integer.toString(match.getId()), Toast.LENGTH_SHORT).show();
         switch (matchStatus) {
             case PREDICTIONS_STATUS_NEW:
                 DialogFragment newFragment = CreatePredictionFragment.newInstance(match);
@@ -139,10 +138,8 @@ public class BetsActivity extends AppCompatActivity
                 Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
                 Toast.makeText(BetsActivity.this, "Success predict", Toast.LENGTH_SHORT).show();
                 NewPredictionsFragment newPredictionsFragment = (NewPredictionsFragment) adapter.getFragment(PREDICTIONS_STATUS_NEW);
-                Log.v(TAG, "onFragmentInteraction: newPredictionsFragment: " + newPredictionsFragment.toString());
                 newPredictionsFragment.refreshMatches(servicesClient);
                 PendingPredictionsFragment pendingPredictionsFragment = (PendingPredictionsFragment) adapter.getFragment(PREDICTIONS_STATUS_PENDING);
-                Log.v(TAG, "onFragmentInteraction: pendingPredictionsFragment: " + pendingPredictionsFragment.toString());
                 pendingPredictionsFragment.refreshMatches(servicesClient);
             }
 
@@ -150,18 +147,12 @@ public class BetsActivity extends AppCompatActivity
             public void onFailure(int statusCode, Header[] headers,  Throwable error, JSONObject response) {
                 Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
                 Log.v(TAG, "onFragmentInteraction: error: " + error.toString());
-                Toast.makeText(BetsActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers,  Throwable error, JSONArray response) {
                 Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
                 Log.v(TAG, "onFragmentInteraction: error: " + error.toString());
-                try {
-                    Toast.makeText(BetsActivity.this, response.getString(0), Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
         });
     }

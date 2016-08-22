@@ -16,14 +16,6 @@ import android.widget.Toast;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.pojo.Match;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CreatePredictionFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CreatePredictionFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CreatePredictionFragment extends DialogFragment {
     private static final String ARG_MATCH = "match";
 
@@ -35,13 +27,6 @@ public class CreatePredictionFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param match Match.
-     * @return A new instance of fragment CreatePredictionFragment.
-     */
     public static CreatePredictionFragment newInstance(Match match) {
         CreatePredictionFragment fragment = new CreatePredictionFragment();
         Bundle args = new Bundle();
@@ -81,7 +66,6 @@ public class CreatePredictionFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 onPredictionButtonPressed(mMatch.getId(), numberPicker_home_team.getValue(), numberPicker_visitor_team.getValue());
-                //Toast.makeText(getActivity(), numberPicker_home_team.getValue() + " : " + numberPicker_visitor_team.getValue(), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -113,16 +97,6 @@ public class CreatePredictionFragment extends DialogFragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(int matchId, int team_home_prediction, int team_visitor_prediction);
     }
