@@ -81,7 +81,6 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
         return rootView;
     }
 
-    @Override
     public void refreshMatches(ServicesClient servicesClient) {
         predictServices = new PredictServices(servicesClient);
         predictServices.pending(new AsyncHttpResponseHandler() {
