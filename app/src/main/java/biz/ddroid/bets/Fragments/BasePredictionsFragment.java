@@ -5,11 +5,17 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import biz.ddroid.bets.BetApplication;
+import biz.ddroid.bets.R;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
@@ -18,12 +24,20 @@ import biz.ddroid.bets.utils.SharedPrefs;
 public abstract class BasePredictionsFragment extends Fragment {
 
     protected static final String ARG_BETS_STATUS = "predictions_status";
+    protected static final String STATE_MATCHES = "state_matches";
+    protected static final String STATE_REQUEST_TIME = "state_request_time";
 
     private int mPredictionsStatus;
     private OnFragmentInteractionListener mListener;
     protected ArrayList<Match> mMatches = new ArrayList<>();
     protected PredictServices predictServices;
     protected ServicesClient servicesClient;
+    protected Date requestTime;
+    protected RecyclerView recyclerView;
+    protected TextView requestDateTime;
+    protected TextView dataInfo;
+    protected boolean isResponseEmpty = true;
+    protected boolean isRequestEnd = false;
     private String TAG = "BasePredictionsFragment";
 
     public BasePredictionsFragment() {
@@ -42,6 +56,32 @@ public abstract class BasePredictionsFragment extends Fragment {
         }
         servicesClient = BetApplication.getServicesClient();
         servicesClient.setToken(getActivity().getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STATE_MATCHES, mMatches);
+        outState.putLong(STATE_REQUEST_TIME, requestTime.getTime());
+    }
+
+    protected void updateUI() {
+        if (mMatches.size() == 0 && (!isRequestEnd || isRequestEnd && !isResponseEmpty)) {
+            dataInfo.setVisibility(View.VISIBLE);
+            requestDateTime.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        } else if (mMatches.size() == 0 && isRequestEnd && isResponseEmpty) {
+            dataInfo.setVisibility(View.VISIBLE);
+            dataInfo.setText(R.string.no_data);
+            requestDateTime.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            dataInfo.setVisibility(View.GONE);
+            requestDateTime.setVisibility(View.VISIBLE);
+            requestDateTime.setText(DateFormat.getTimeInstance().format(requestTime));
+            recyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void onMatchSelected(Match match, int matchStatus) {
