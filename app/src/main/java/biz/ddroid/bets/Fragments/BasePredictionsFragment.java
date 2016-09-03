@@ -45,10 +45,6 @@ public abstract class BasePredictionsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    abstract protected void parseMatches(byte[] responseBody);
-
-    abstract public void refreshMatches(ServicesClient servicesClient);
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,41 +60,6 @@ public abstract class BasePredictionsFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STATE_MATCHES, mMatches);
         outState.putLong(STATE_REQUEST_TIME, requestTime.getTime());
-    }
-
-    protected void updateUI() {
-        if (mMatches.size() == 0 && (!isRequestEnd || isRequestEnd && !isResponseEmpty)) {
-            dataInfo.setVisibility(View.VISIBLE);
-            requestDateTime.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-        } else if (mMatches.size() == 0 && isRequestEnd && isResponseEmpty) {
-            dataInfo.setVisibility(View.VISIBLE);
-            dataInfo.setText(R.string.no_data);
-            requestDateTime.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-        }
-        else {
-            dataInfo.setVisibility(View.GONE);
-            requestDateTime.setVisibility(View.VISIBLE);
-            requestDateTime.setText(DateFormat.getTimeInstance().format(requestTime));
-            recyclerView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void onMatchSelected(Match match, int matchStatus) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(match, matchStatus);
-        }
-    }
-
-    public void onFragmentRefreshed() {
-        if (mFragmentRefreshListener != null) {
-            mFragmentRefreshListener.onFragmentRefreshed();
-        }
-    }
-
-    public int getPredictionsStatus() {
-        return mPredictionsStatus;
     }
 
     @Override
@@ -124,65 +85,51 @@ public abstract class BasePredictionsFragment extends Fragment {
         mListener = null;
     }
 
+    public void onMatchSelected(Match match, int matchStatus) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(match, matchStatus);
+        }
+    }
+
+    public void onFragmentRefreshed() {
+        if (mFragmentRefreshListener != null) {
+            mFragmentRefreshListener.onFragmentRefreshed();
+        }
+    }
+
+    public int getPredictionsStatus() {
+        return mPredictionsStatus;
+    }
+
+    protected void updateUI() {
+        if (mMatches.size() == 0 && (!isRequestEnd || isRequestEnd && !isResponseEmpty)) {
+            dataInfo.setVisibility(View.VISIBLE);
+            requestDateTime.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        } else if (mMatches.size() == 0 && isRequestEnd && isResponseEmpty) {
+            dataInfo.setVisibility(View.VISIBLE);
+            dataInfo.setText(R.string.no_data);
+            requestDateTime.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            dataInfo.setVisibility(View.GONE);
+            requestDateTime.setVisibility(View.VISIBLE);
+            requestDateTime.setText(DateFormat.getTimeInstance().format(requestTime));
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    abstract public void refreshMatches(ServicesClient servicesClient);
+
+    abstract protected void parseMatches(byte[] responseBody);
+
     public interface OnFragmentInteractionListener {
+
         void onFragmentInteraction(Match match, int matchStatus);
     }
-
     public interface OnFragmentRefreshListener {
+
         void onFragmentRefreshed();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.v(TAG, "onResume: " + this.toString());
-    }
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.v(TAG, "onStart: " + this.toString());
-
-    }
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.v(TAG, "onPause: " + this.toString());
-
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.v(TAG, "onStop: " + this.toString());
-
-    }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.v(TAG, "onDestroy: " + this.toString());
-
-    }
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.v(TAG, "onActivityCreated: " + this.toString());
-
-    }
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.v(TAG, "onDestroyView: " + this.toString());
-
-    }
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Log.v(TAG, "onConfigurationChanged: " + this.toString());
-
-    }
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        Log.v(TAG, "onViewStateRestored: " + this.toString());
-
     }
 }

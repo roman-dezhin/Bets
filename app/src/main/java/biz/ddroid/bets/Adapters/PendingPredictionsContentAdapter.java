@@ -27,15 +27,6 @@ public class PendingPredictionsContentAdapter extends RecyclerView.Adapter<Pendi
          void onClick(Match match, int matchStatus);
     }
 
-    public void setListener(Listener listener) {
-        this.mListener = listener;
-    }
-
-    public void setMatches(ArrayList<Match> listMatches) {
-        this.mMatches = listMatches;
-        notifyDataSetChanged();
-    }
-
     @Override
     public PendingPredictionsContentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.card_match_pending, parent, false);
@@ -84,6 +75,15 @@ public class PendingPredictionsContentAdapter extends RecyclerView.Adapter<Pendi
     @Override
     public int getItemCount() {
         return mMatches.size();
+    }
+
+    public void setListener(Listener listener) {
+        this.mListener = listener;
+    }
+
+    public void setMatches(ArrayList<Match> listMatches) {
+        this.mMatches = listMatches;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

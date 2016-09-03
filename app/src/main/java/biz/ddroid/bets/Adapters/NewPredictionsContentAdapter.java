@@ -27,15 +27,6 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
          void onClick(Match match, int matchStatus);
     }
 
-    public void setListener(Listener listener) {
-        this.mListener = listener;
-    }
-
-    public void setMatches(ArrayList<Match> listMatches) {
-        this.mMatches = listMatches;
-        notifyDataSetChanged();
-    }
-
     @Override
     public NewPredictionsContentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.card_match_new, parent, false);
@@ -81,6 +72,15 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
     @Override
     public int getItemCount() {
         return mMatches.size();
+    }
+
+    public void setListener(Listener listener) {
+        this.mListener = listener;
+    }
+
+    public void setMatches(ArrayList<Match> listMatches) {
+        this.mMatches = listMatches;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -27,15 +27,6 @@ public class CompletedPredictionsContentAdapter extends RecyclerView.Adapter<Com
          void onClick(Match match, int matchStatus);
     }
 
-    public void setListener(Listener listener) {
-        this.mListener = listener;
-    }
-
-    public void setMatches(ArrayList<Match> listMatches) {
-        this.mMatches = listMatches;
-        notifyDataSetChanged();
-    }
-
     @Override
     public CompletedPredictionsContentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.card_match_completed, parent, false);
@@ -90,6 +81,15 @@ public class CompletedPredictionsContentAdapter extends RecyclerView.Adapter<Com
     @Override
     public int getItemCount() {
         return mMatches.size();
+    }
+
+    public void setListener(Listener listener) {
+        this.mListener = listener;
+    }
+
+    public void setMatches(ArrayList<Match> listMatches) {
+        this.mMatches = listMatches;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
