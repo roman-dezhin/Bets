@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="none">
         <item
             android:id="@+id/matches"
             android:icon="@drawable/ic_menu_matches"
             android:title="@string/matches" />
         <item
+            android:id="@+id/profile"
+            android:icon="@drawable/ic_profile"
+            android:title="@string/profile" />
+        <item
             android:id="@+id/results"
             android:icon="@drawable/ic_menu_results"
             android:title="@string/results" />
+        <item
+            android:id="@+id/statistics"
+            android:icon="@drawable/ic_statistics"
+            android:title="@string/statistics" />
         <item
             android:id="@+id/rules"
             android:icon="@drawable/ic_menu_rules"

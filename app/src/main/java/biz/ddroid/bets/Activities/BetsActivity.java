@@ -1,5 +1,6 @@
 package biz.ddroid.bets.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -203,6 +204,11 @@ public class BetsActivity extends AppCompatActivity
         if (id == R.id.matches) {
             viewPager.setCurrentItem(0);
         } else if (id == R.id.results) {
+            Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.profile) {
+
+        } else if (id == R.id.statistics) {
 
         } else if (id == R.id.rules) {
 
