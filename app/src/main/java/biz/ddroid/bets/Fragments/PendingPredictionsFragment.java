@@ -48,7 +48,7 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
         Log.v(TAG, "onCreateView: ");
         View rootView = inflater.inflate(R.layout.fragment_predictions, container, false);
         requestDateTime = (TextView) rootView.findViewById(R.id.request_datetime);
-        dataInfo = (TextView) rootView.findViewById(R.id.new_predictions_info);
+        dataInfo = (TextView) rootView.findViewById(R.id.predictions_info);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         adapter = new PendingPredictionsContentAdapter(getPredictionsStatus());
         adapter.setListener(new PendingPredictionsContentAdapter.Listener() {
@@ -83,7 +83,7 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
 
     public void refreshMatches(ServicesClient servicesClient) {
         predictServices = new PredictServices(servicesClient);
-        predictServices.pending(new AsyncHttpResponseHandler() {
+        predictServices.pendingMatches(new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.v(TAG, new String(responseBody));

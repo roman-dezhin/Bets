@@ -27,14 +27,21 @@
     <string name="tab_matches_new">New</string>
     <string name="tab_matches_pending">Pending</string>
     <string name="tab_matches_completed">Completed</string>
-    <string name="betsCount">"Bets count: %1$d"</string>
+    <string name="tab_results_friends">Friends</string>
+    <string name="tab_results_world">World</string>
+    <string name="betsCount_formating">"Bets count: %1$d"</string>
     <string name="friendsPredictions">"Friends predictions:"</string>
-    <string name="points">"Points: %1$d"</string>
+    <string name="points_formating">"Points: %1$d"</string>
 
     <string name="matches">Matches</string>
     <string name="results">Results</string>
     <string name="rules">Rules</string>
     <string name="profile">Profile</string>
     <string name="statistics">Statistics</string>
+    <string name="user_name">Name</string>
+    <string name="points">Points</string>
+    <string name="bets">Bets</string>
+    <string name="scores">Scores</string>
+
 
 </resources>

@@ -28,7 +28,15 @@ public class PredictServices {
     public final static String USER_NAME = "user_name";
     public final static String PREDICTIONS_COUNT = "predictions_count";
     public final static String DATETIME_FORMAT = "HH:mm dd.MM.yy";
-
+    public final static String RESULT_ROWS = "result_rows";
+    public final static String RESULT_USERNAME = "result_username";
+    public final static String RESULT_POINTS = "result_points";
+    public final static String RESULT_PREDICTIONS = "result_predictions";
+    public final static String RESULT_SCORES = "result_scores";
+    public final static String RESULT_RESULTS = "result_results";
+    public final static String TOURNAMENT_IS_FINISHED = "tournament_is_finished";
+    public final static String TOURNAMENT_FILTER = "tournament_status";
+    public final static String RESULT_FILTER = "result_status";
 
     public PredictServices(ServicesClient c) {
         client = c;
@@ -50,11 +58,15 @@ public class PredictServices {
         client.post("predict/new", new JSONObject(), responseHandler);
     }
 
-    public void pending(AsyncHttpResponseHandler responseHandler){
+    public void pendingMatches(AsyncHttpResponseHandler responseHandler){
         client.post("predict/pending", new JSONObject(), responseHandler);
     }
 
-    public void completed(AsyncHttpResponseHandler responseHandler){
+    public void completedMatches(AsyncHttpResponseHandler responseHandler){
         client.post("predict/completed", new JSONObject(), responseHandler);
+    }
+
+    public void results(JSONObject params, AsyncHttpResponseHandler responseHandler) {
+        client.post("predict/results", params, responseHandler);
     }
 }

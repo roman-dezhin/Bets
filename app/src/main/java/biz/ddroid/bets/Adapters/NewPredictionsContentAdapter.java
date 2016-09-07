@@ -51,7 +51,7 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
         dateTime.setText(match.getDateTime());
 
         TextView betsCount = (TextView) cardView.findViewById(R.id.bets_count);
-        betsCount.setText(String.format(cardView.getContext().getString(R.string.betsCount), match.getBetsCount()));
+        betsCount.setText(String.format(cardView.getContext().getString(R.string.betsCount_formating), match.getBetsCount()));
 
         TextView nameTeam1 = (TextView) cardView.findViewById(R.id.name_team1);
         nameTeam1.setText(match.getTeam1());

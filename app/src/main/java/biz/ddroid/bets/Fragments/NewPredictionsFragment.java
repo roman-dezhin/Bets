@@ -48,7 +48,7 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
         Log.v(TAG, "onCreateView: ");
         View rootView = inflater.inflate(R.layout.fragment_predictions, container, false);
         requestDateTime = (TextView) rootView.findViewById(R.id.request_datetime);
-        dataInfo = (TextView) rootView.findViewById(R.id.new_predictions_info);
+        dataInfo = (TextView) rootView.findViewById(R.id.predictions_info);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         adapter = new NewPredictionsContentAdapter(getPredictionsStatus());
         adapter.setListener(new NewPredictionsContentAdapter.Listener() {
