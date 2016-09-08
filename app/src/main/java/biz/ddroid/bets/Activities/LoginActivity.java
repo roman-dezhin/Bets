@@ -106,6 +106,8 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), BetsActivity.class);
                             startActivity(intent);
                             finish();
+                        } else {
+                            login(username, password);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -77,9 +77,7 @@ public abstract class BaseResultsFragment extends Fragment {
     }
 
     public void onFragmentRefreshed() {
-        if (mFragmentRefreshListener != null) {
-            mFragmentRefreshListener.onFragmentRefreshed();
-        }
+        if (mFragmentRefreshListener != null) mFragmentRefreshListener.onFragmentRefreshed();
     }
 
     public int getResultsStatus() {
