@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -22,6 +23,7 @@ import biz.ddroid.bets.adapters.PendingPredictionsContentAdapter;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
+import biz.ddroid.bets.utils.NetworkUtils;
 import cz.msebera.android.httpclient.Header;
 
 public class PendingPredictionsFragment extends BasePredictionsFragment {
@@ -82,19 +84,23 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
     }
 
     public void refreshMatches(ServicesClient servicesClient) {
+        if (!NetworkUtils.isNetworkConnected(getActivity())) {
+            Toast.makeText(getActivity(), R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+            onFragmentRefreshed();
+        }
         predictServices = new PredictServices(servicesClient);
         predictServices.pendingMatches(new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.v(TAG, new String(responseBody));
+                if (responseBody != null) Log.v(TAG, new String(responseBody));
                 requestTime = new Date();
                 isRequestEnd = true;
-                parseMatches(responseBody);
+                if (responseBody != null) parseMatches(responseBody);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.v(TAG, new String(responseBody));
+                if (responseBody != null) Log.v(TAG, new String(responseBody));
             }
 
             @Override

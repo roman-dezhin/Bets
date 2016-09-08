@@ -42,6 +42,7 @@
     <string name="points">Points</string>
     <string name="bets">Bets</string>
     <string name="scores">Scores</string>
+    <string name="no_internet_connections">Sorry, No internet connectivity found</string>
 
 
 </resources>

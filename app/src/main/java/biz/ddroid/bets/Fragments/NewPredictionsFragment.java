@@ -1,5 +1,7 @@
 package biz.ddroid.bets.fragments;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.PersistentCookieStore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,11 +21,14 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.adapters.NewPredictionsContentAdapter;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
+import biz.ddroid.bets.rest.SystemServices;
+import biz.ddroid.bets.utils.NetworkUtils;
 import cz.msebera.android.httpclient.Header;
 
 public class NewPredictionsFragment extends BasePredictionsFragment {
@@ -82,19 +89,38 @@ public class NewPredictionsFragment extends BasePredictionsFragment {
     }
 
     public void refreshMatches(ServicesClient servicesClient) {
-        predictServices = new PredictServices(servicesClient);
-        predictServices.newMatches(new AsyncHttpResponseHandler() {
+        if (!NetworkUtils.isNetworkConnected(getActivity())) {
+            Toast.makeText(getActivity(), R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+            onFragmentRefreshed();
+        }
+        SystemServices systemServices = new SystemServices(servicesClient);
+        systemServices.connect(new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.v(TAG, new String(responseBody));
-                requestTime = new Date();
-                isRequestEnd = true;
-                parseMatches(responseBody);
+                if (responseBody != null) Log.v(TAG, "ConnectOk:" + new String(responseBody));
+
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.v(TAG, new String(responseBody));
+                if (responseBody != null) Log.v(TAG, "ConnectBad:" + new String(responseBody));
+
+            }
+        });
+        Log.v(TAG, "Cookies: " + String.valueOf(new PersistentCookieStore(getContext()).getCookies()));
+        predictServices = new PredictServices(servicesClient);
+        predictServices.newMatches(new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (responseBody != null) Log.v(TAG, new String(responseBody));
+                requestTime = new Date();
+                isRequestEnd = true;
+                if (responseBody != null) parseMatches(responseBody);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                if (responseBody != null) Log.v(TAG, new String(responseBody));
             }
 
             @Override

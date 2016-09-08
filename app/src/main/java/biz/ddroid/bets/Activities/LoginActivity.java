@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
@@ -33,6 +34,7 @@ import biz.ddroid.bets.R;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.rest.SystemServices;
 import biz.ddroid.bets.rest.UserServices;
+import biz.ddroid.bets.utils.NetworkUtils;
 import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
@@ -96,6 +98,10 @@ public class LoginActivity extends AppCompatActivity {
         final String token = settings.getString(SharedPrefs.TOKEN, "");
         final String email = settings.getString(SharedPrefs.EMAIL, "");
         if (!userId.isEmpty() && !username.isEmpty() && !password.isEmpty() && !token.isEmpty() && !email.isEmpty()) {
+            if (!NetworkUtils.isNetworkConnected(this)) {
+                Toast.makeText(this, R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+                return;
+            }
             servicesClient.setToken(token);
             SystemServices systemServices = new SystemServices(servicesClient);
             systemServices.connect(new JsonHttpResponseHandler() {
@@ -168,6 +174,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void isUserExist(final String username, final String email, final String password) {
+        if (!NetworkUtils.isNetworkConnected(this)) {
+            Toast.makeText(this, R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+            return;
+        }
         showProgress(true);
 
         userServices.isUserExist(username, new JsonHttpResponseHandler() {
@@ -208,6 +218,10 @@ public class LoginActivity extends AppCompatActivity {
             mEmailView.setError(getString(R.string.error_invalid_email));
             mEmailView.requestFocus();
         } else {
+            if (!NetworkUtils.isNetworkConnected(this)) {
+                Toast.makeText(this, R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+                return;
+            }
             showProgress(true);
             userServices.register(username, password, email, new JsonHttpResponseHandler() {
                 @Override
@@ -245,6 +259,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(final String username, final String password) {
+        if (!NetworkUtils.isNetworkConnected(this)) {
+            Toast.makeText(this, R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+            return;
+        }
         showProgress(true);
         userServices.login(username, password, new JsonHttpResponseHandler() {
             @Override

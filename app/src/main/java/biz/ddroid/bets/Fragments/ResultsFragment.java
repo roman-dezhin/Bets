@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -27,6 +28,7 @@ import biz.ddroid.bets.pojo.TournamentResult;
 import biz.ddroid.bets.pojo.TournamentResultRow;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
+import biz.ddroid.bets.utils.NetworkUtils;
 import cz.msebera.android.httpclient.Header;
 
 public class ResultsFragment extends BaseResultsFragment {
@@ -86,6 +88,10 @@ public class ResultsFragment extends BaseResultsFragment {
     }
 
     public void refreshResults(ServicesClient servicesClient) {
+        if (!NetworkUtils.isNetworkConnected(getActivity())) {
+            Toast.makeText(getActivity(), R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+            onFragmentRefreshed();
+        }
         predictServices = new PredictServices(servicesClient);
         JSONObject filter = new JSONObject();
         try {
@@ -97,15 +103,15 @@ public class ResultsFragment extends BaseResultsFragment {
         predictServices.results(filter, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.v(TAG, new String(responseBody));
+                if (responseBody != null) Log.v(TAG, new String(responseBody));
                 requestTime = new Date();
                 isRequestEnd = true;
-                parseResults(responseBody);
+                if (responseBody != null) parseResults(responseBody);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.v(TAG, new String(responseBody));
+                if (responseBody != null) Log.v(TAG, new String(responseBody));
             }
 
             @Override

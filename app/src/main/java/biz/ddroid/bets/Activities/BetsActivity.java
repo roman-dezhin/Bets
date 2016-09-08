@@ -44,6 +44,7 @@ import biz.ddroid.bets.fragments.PendingPredictionsFragment;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
+import biz.ddroid.bets.utils.NetworkUtils;
 import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
@@ -110,6 +111,10 @@ public class BetsActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(int matchId, int team_home_prediction, int team_visitor_prediction) {
+        if (!NetworkUtils.isNetworkConnected(this)) {
+            Toast.makeText(this, R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+            return;
+        }
         JSONObject prediction = new JSONObject();
         try {
             prediction.put(PredictServices.MATCH_ID, Integer.toString(matchId));
