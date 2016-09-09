@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bets</string>
+    <string name="rules_text" translatable="false">За угаданный счет - 5 баллов.\nЗа угаданный результат и разницу мячей или когда ничья - 3 балла.\nЗа угаданный результат - 2 балла.</string>
+</resources>

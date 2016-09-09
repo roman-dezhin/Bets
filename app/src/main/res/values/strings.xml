@@ -45,6 +45,5 @@
     <string name="no_internet_connections">Sorry, No internet connectivity found</string>
     <string name="percents">%</string>
     <string name="wins">Wins</string>
-
-
+    <string name="rules_text" translatable="false">For guessing the score - 5 points.\nFor guessing the result and goal difference or when a draw - 3 points.\nFor guessed result - 2 points.</string>
 </resources>

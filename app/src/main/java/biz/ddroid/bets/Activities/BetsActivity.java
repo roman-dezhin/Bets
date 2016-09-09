@@ -219,7 +219,8 @@ public class BetsActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), StatisticsActivity.class);
             startActivity(intent);
         } else if (id == R.id.rules) {
-
+            Intent intent = new Intent(getApplicationContext(), RulesActivity.class);
+            startActivity(intent);
         } else if (id == R.id.settings) {
 
         }
