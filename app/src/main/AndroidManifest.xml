@@ -33,6 +33,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.BetsActivity" />
         </activity>
+        <activity
+            android:name=".activities.StatisticsActivity"
+            android:label="@string/statistics"
+            android:parentActivityName=".activities.BetsActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.BetsActivity" />
+        </activity>
     </application>
 
 </manifest>

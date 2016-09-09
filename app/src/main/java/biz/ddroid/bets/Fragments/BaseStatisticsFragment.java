@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -14,32 +15,32 @@ import java.util.Date;
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.listener.OnFragmentRefresh;
-import biz.ddroid.bets.pojo.Match;
+import biz.ddroid.bets.pojo.Statistic;
 import biz.ddroid.bets.pojo.TournamentResult;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.SharedPrefs;
 
-public abstract class BaseResultsFragment extends Fragment {
+public abstract class BaseStatisticsFragment extends Fragment {
 
-    protected static final String ARG_RESULTS_STATUS = "results_status";
-    protected static final String STATE_RESULTS = "state_results";
+    protected static final String ARG_STATISTICS_STATUS = "statistics_status";
+    protected static final String STATE_STATISTICS = "state_statistics";
     protected static final String STATE_REQUEST_TIME = "state_request_time";
 
-    private int mResultsStatus;
+    private int mStatisticsStatus;
     private OnFragmentRefresh mFragmentRefreshListener;
-    protected ArrayList<TournamentResult> results = new ArrayList<>();
+    protected ArrayList<Statistic> statistics = new ArrayList<>();
     protected PredictServices predictServices;
     protected ServicesClient servicesClient;
     protected Date requestTime;
-    protected RecyclerView recyclerView;
+    protected TableLayout tableLayout;
     protected TextView requestDateTime;
     protected TextView dataInfo;
     protected boolean isResponseEmpty = true;
     protected boolean isRequestEnd = false;
-    private String TAG = "BaseResultsFragment";
+    private String TAG = "BaseStatisticsFragment";
 
-    public BaseResultsFragment() {
+    public BaseStatisticsFragment() {
         // Required empty public constructor
     }
 
@@ -47,7 +48,7 @@ public abstract class BaseResultsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mResultsStatus = getArguments().getInt(ARG_RESULTS_STATUS);
+            mStatisticsStatus = getArguments().getInt(ARG_STATISTICS_STATUS);
         }
         servicesClient = BetApplication.getServicesClient();
         servicesClient.setToken(getActivity().getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
@@ -56,7 +57,7 @@ public abstract class BaseResultsFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(STATE_RESULTS, results);
+        outState.putParcelableArrayList(STATE_STATISTICS, statistics);
         outState.putLong(STATE_REQUEST_TIME, requestTime.getTime());
     }
 
@@ -81,26 +82,26 @@ public abstract class BaseResultsFragment extends Fragment {
         if (mFragmentRefreshListener != null) mFragmentRefreshListener.onFragmentRefreshed();
     }
 
-    public int getResultsStatus() {
-        return mResultsStatus;
+    public int getStatisticsStatus() {
+        return mStatisticsStatus;
     }
 
     protected void updateUI() {
-        if (results.size() == 0 && (!isRequestEnd || isRequestEnd && !isResponseEmpty)) {
+        if (statistics.size() == 0 && (!isRequestEnd || isRequestEnd && !isResponseEmpty)) {
             dataInfo.setVisibility(View.VISIBLE);
             requestDateTime.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-        } else if (results.size() == 0 && isRequestEnd && isResponseEmpty) {
+            tableLayout.setVisibility(View.GONE);
+        } else if (statistics.size() == 0 && isRequestEnd && isResponseEmpty) {
             dataInfo.setVisibility(View.VISIBLE);
             dataInfo.setText(R.string.no_data);
             requestDateTime.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
         }
         else {
             dataInfo.setVisibility(View.GONE);
             requestDateTime.setVisibility(View.VISIBLE);
             requestDateTime.setText(DateFormat.getTimeInstance().format(requestTime));
-            recyclerView.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
         }
     }
 

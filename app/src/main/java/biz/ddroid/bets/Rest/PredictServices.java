@@ -29,14 +29,21 @@ public class PredictServices {
     public final static String PREDICTIONS_COUNT = "predictions_count";
     public final static String DATETIME_FORMAT = "HH:mm dd.MM.yy";
     public final static String RESULT_ROWS = "result_rows";
-    public final static String RESULT_USERNAME = "result_username";
-    public final static String RESULT_POINTS = "result_points";
-    public final static String RESULT_PREDICTIONS = "result_predictions";
-    public final static String RESULT_SCORES = "result_scores";
-    public final static String RESULT_RESULTS = "result_results";
+    public final static String RESULT_USERNAME = "username";
+    public final static String RESULT_POINTS = "points";
+    public final static String RESULT_PREDICTIONS = "predictions";
+    public final static String RESULT_SCORES = "scores";
+    public final static String RESULT_RESULTS = "results";
     public final static String TOURNAMENT_IS_FINISHED = "tournament_is_finished";
     public final static String TOURNAMENT_FILTER = "tournament_status";
     public final static String RESULT_FILTER = "result_status";
+    public final static String STATISTIC_USERNAME = "username";
+    public final static String STATISTIC_POINTS = "points";
+    public final static String STATISTIC_PREDICTIONS = "predictions";
+    public final static String STATISTIC_SCORES = "scores";
+    public final static String STATISTIC_RESULTS = "results";
+    public final static String STATISTIC_PERCENTS = "percents";
+    public final static String STATISTIC_WINS = "wins";
 
     public PredictServices(ServicesClient c) {
         client = c;
@@ -68,5 +75,9 @@ public class PredictServices {
 
     public void results(JSONObject params, AsyncHttpResponseHandler responseHandler) {
         client.post("predict/results", params, responseHandler);
+    }
+
+    public void statistic(JSONObject params, AsyncHttpResponseHandler responseHandler) {
+        client.post("predict/statistic", params, responseHandler);
     }
 }

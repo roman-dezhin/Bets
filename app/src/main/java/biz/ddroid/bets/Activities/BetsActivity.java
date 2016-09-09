@@ -41,6 +41,7 @@ import biz.ddroid.bets.fragments.CompletedPredictionsFragment;
 import biz.ddroid.bets.fragments.CreatePredictionFragment;
 import biz.ddroid.bets.fragments.NewPredictionsFragment;
 import biz.ddroid.bets.fragments.PendingPredictionsFragment;
+import biz.ddroid.bets.listener.OnFragmentRefresh;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
@@ -50,7 +51,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class BetsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, BasePredictionsFragment.OnFragmentInteractionListener,
-        CreatePredictionFragment.OnFragmentInteractionListener, BasePredictionsFragment.OnFragmentRefreshListener {
+        CreatePredictionFragment.OnFragmentInteractionListener, OnFragmentRefresh {
 
     private Adapter adapter;
     private ViewPager viewPager;
@@ -215,7 +216,8 @@ public class BetsActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
             startActivity(intent);
         } else if (id == R.id.statistics) {
-
+            Intent intent = new Intent(getApplicationContext(), StatisticsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.rules) {
 
         } else if (id == R.id.settings) {

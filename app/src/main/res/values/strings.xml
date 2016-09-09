@@ -43,6 +43,8 @@
     <string name="bets">Bets</string>
     <string name="scores">Scores</string>
     <string name="no_internet_connections">Sorry, No internet connectivity found</string>
+    <string name="percents">%</string>
+    <string name="wins">Wins</string>
 
 
 </resources>

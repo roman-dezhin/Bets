@@ -1,5 +1,6 @@
 package biz.ddroid.bets.activities;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -7,7 +8,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,29 +20,25 @@ import java.util.Map;
 
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
-import biz.ddroid.bets.fragments.BaseResultsFragment;
-import biz.ddroid.bets.fragments.CompletedPredictionsFragment;
-import biz.ddroid.bets.fragments.NewPredictionsFragment;
-import biz.ddroid.bets.fragments.PendingPredictionsFragment;
-import biz.ddroid.bets.fragments.ResultsFragment;
+import biz.ddroid.bets.fragments.StatisticsFragment;
 import biz.ddroid.bets.listener.OnFragmentRefresh;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.SharedPrefs;
 
-public class ResultsActivity extends AppCompatActivity implements OnFragmentRefresh {
+public class StatisticsActivity extends AppCompatActivity implements OnFragmentRefresh {
 
     private Adapter adapter;
     private ViewPager viewPager;
     private MenuItem menuItem;
-    public final static int RESULTS_FRIENDS = 0;
-    public final static int RESULTS_WORLD = 1;
+    public final static int STATISTICS_FRIENDS = 0;
+    public final static int STATISTICS_WORLD = 1;
 
-    private String TAG = "ResultsActivity";
+    private String TAG = "StatisticsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_results);
+        setContentView(R.layout.activity_statistics);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Setting ViewPager for each Tabs
@@ -111,8 +107,8 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
     private void refreshFragmentData(int tabId) {
         ServicesClient servicesClient = BetApplication.getServicesClient();
         servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
-        ResultsFragment resultsFragment = (ResultsFragment) adapter.getFragment(tabId);
-        resultsFragment.refreshResults(servicesClient);
+        StatisticsFragment statisticsFragment = (StatisticsFragment) adapter.getFragment(tabId);
+        statisticsFragment.refreshResults(servicesClient);
     }
 
     public class Adapter extends FragmentPagerAdapter {
@@ -135,10 +131,10 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
         @Override
         public Fragment getItem(int position) {
             switch (position){
-                case RESULTS_FRIENDS:
-                    return ResultsFragment.newInstance(RESULTS_FRIENDS);
-                case RESULTS_WORLD:
-                    return ResultsFragment.newInstance(RESULTS_WORLD);
+                case STATISTICS_FRIENDS:
+                    return StatisticsFragment.newInstance(STATISTICS_FRIENDS);
+                case STATISTICS_WORLD:
+                    return StatisticsFragment.newInstance(STATISTICS_WORLD);
             }
             return null;
         }

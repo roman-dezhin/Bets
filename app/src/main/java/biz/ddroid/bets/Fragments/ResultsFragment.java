@@ -106,7 +106,7 @@ public class ResultsFragment extends BaseResultsFragment {
                 if (responseBody != null) Log.v(TAG, new String(responseBody));
                 requestTime = new Date();
                 isRequestEnd = true;
-                if (responseBody != null) parseResults(responseBody);
+                if (responseBody != null) parseResponse(responseBody);
             }
 
             @Override
@@ -121,7 +121,7 @@ public class ResultsFragment extends BaseResultsFragment {
         });
     }
 
-    protected void parseResults(byte[] responseBody) {
+    protected void parseResponse(byte[] responseBody) {
         results.clear();
         try {
             JSONArray response = new JSONArray(new String(responseBody));

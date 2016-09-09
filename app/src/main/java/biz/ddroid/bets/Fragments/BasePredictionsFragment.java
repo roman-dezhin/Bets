@@ -16,6 +16,7 @@ import java.util.Date;
 
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
+import biz.ddroid.bets.listener.OnFragmentRefresh;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
@@ -29,7 +30,7 @@ public abstract class BasePredictionsFragment extends Fragment {
 
     private int mPredictionsStatus;
     private OnFragmentInteractionListener mListener;
-    private OnFragmentRefreshListener mFragmentRefreshListener;
+    private OnFragmentRefresh mFragmentRefreshListener;
     protected ArrayList<Match> mMatches = new ArrayList<>();
     protected PredictServices predictServices;
     protected ServicesClient servicesClient;
@@ -71,8 +72,8 @@ public abstract class BasePredictionsFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        if (context instanceof OnFragmentRefreshListener) {
-            mFragmentRefreshListener = (OnFragmentRefreshListener) context;
+        if (context instanceof OnFragmentRefresh) {
+            mFragmentRefreshListener = (OnFragmentRefresh) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentRefreshListener");
@@ -128,9 +129,5 @@ public abstract class BasePredictionsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
 
         void onFragmentInteraction(Match match, int matchStatus);
-    }
-    public interface OnFragmentRefreshListener {
-
-        void onFragmentRefreshed();
     }
 }
