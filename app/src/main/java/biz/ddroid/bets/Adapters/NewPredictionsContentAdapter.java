@@ -9,10 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.pojo.Match;
+import biz.ddroid.bets.utils.NetworkConstants;
 
 public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredictionsContentAdapter.ViewHolder>  {
     private ArrayList<Match> mMatches = new ArrayList<>();
@@ -39,10 +42,17 @@ public class NewPredictionsContentAdapter extends RecyclerView.Adapter<NewPredic
         final Match match = mMatches.get(position);
         CardView cardView = holder.cardView;
         ImageView iconTeam1 = (ImageView) cardView.findViewById(R.id.icon_team1);
-        iconTeam1.setImageDrawable(ResourcesCompat.getDrawable(cardView.getResources(), R.drawable.team1, null));
-
+        Picasso.with(holder.cardView.getContext())
+                .load(NetworkConstants.SERVER_ADDRESS + match.getImageTeam1())
+                .placeholder(R.drawable.team_icon_placeholder)
+                .error(R.drawable.team_icon_placeholder)
+                .into(iconTeam1);
         ImageView iconTeam2 = (ImageView) cardView.findViewById(R.id.icon_team2);
-        iconTeam2.setImageDrawable(ResourcesCompat.getDrawable(cardView.getResources(), R.drawable.team2, null));
+        Picasso.with(holder.cardView.getContext())
+                .load(NetworkConstants.SERVER_ADDRESS + match.getImageTeam2())
+                .placeholder(R.drawable.team_icon_placeholder)
+                .error(R.drawable.team_icon_placeholder)
+                .into(iconTeam2);
 
         TextView tourName = (TextView) cardView.findViewById(R.id.tour_name);
         tourName.setText(match.getTourName() + "   " + match.getStage());
