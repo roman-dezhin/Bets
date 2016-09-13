@@ -96,8 +96,8 @@ public class StatisticsActivity extends AppCompatActivity implements OnFragmentR
     private void setupViewPager(ViewPager viewPager) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         List<String> titleList = new ArrayList<>();
-        titleList.add(getString(R.string.tab_results_friends));
-        titleList.add(getString(R.string.tab_results_world));
+        titleList.add(getString(R.string.tab_statistics_friends));
+        titleList.add(getString(R.string.tab_statistics_world));
         adapter = new Adapter(fragmentManager, titleList);
         Log.v(TAG, "setupViewPager: adapter: " + adapter.toString());
         viewPager.setAdapter(adapter);

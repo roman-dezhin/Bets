@@ -25,10 +25,12 @@
     </string>
     <string name="title_matches_activity">Matches</string>
     <string name="tab_matches_new">New</string>
-    <string name="tab_matches_pending">Pending</string>
-    <string name="tab_matches_completed">Completed</string>
+    <string name="tab_matches_pending">Predictions</string>
+    <string name="tab_matches_completed">Results</string>
     <string name="tab_results_friends">Friends</string>
     <string name="tab_results_world">World</string>
+    <string name="tab_statistics_friends">Friends</string>
+    <string name="tab_statistics_world">World</string>
     <string name="betsCount_formating">"Bets count: %1$d"</string>
     <string name="friendsPredictions">"Friends predictions:"</string>
     <string name="points_formating">"Points: %1$d"</string>
@@ -46,4 +48,6 @@
     <string name="percents">%</string>
     <string name="wins">Wins</string>
     <string name="rules_text" translatable="false">For guessing the score - 5 points.\nFor guessing the result and goal difference or when a draw - 3 points.\nFor guessed result - 2 points.</string>
+    <string name="fragment_create_prediction_title">Predict the score of the match</string>
+    <string name="freagment_create_prediction_predict_button">Predict</string>
 </resources>
