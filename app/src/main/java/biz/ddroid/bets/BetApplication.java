@@ -2,8 +2,8 @@ package biz.ddroid.bets;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
+import com.squareup.leakcanary.LeakCanary;
 
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.NetworkConstants;
@@ -27,6 +27,6 @@ public class BetApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-
+        LeakCanary.install(this);
     }
 }
