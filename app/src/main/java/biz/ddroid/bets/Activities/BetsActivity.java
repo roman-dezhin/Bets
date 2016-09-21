@@ -222,7 +222,6 @@ public class BetsActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), RulesActivity.class);
             startActivity(intent);
         } else if (id == R.id.settings) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

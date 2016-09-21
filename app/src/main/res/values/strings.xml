@@ -31,9 +31,9 @@
     <string name="tab_results_world">World</string>
     <string name="tab_statistics_friends">Friends</string>
     <string name="tab_statistics_world">World</string>
-    <string name="betsCount_formating">"Bets count: %1$d"</string>
+    <string name="betsCount_formatted">"Bets count: %1$d"</string>
     <string name="friendsPredictions">"Friends predictions:"</string>
-    <string name="points_formating">"Points: %1$d"</string>
+    <string name="points_formatted">"Points: %1$d"</string>
 
     <string name="matches">Matches</string>
     <string name="results">Results</string>
@@ -47,7 +47,8 @@
     <string name="no_internet_connections">Sorry, No internet connectivity found</string>
     <string name="percents">%</string>
     <string name="wins">Wins</string>
-    <string name="rules_text" translatable="false">For guessing the score - 5 points.\nFor guessing the result and goal difference or when a draw - 3 points.\nFor guessed result - 2 points.</string>
+    <string name="rules_text">For guessing the score - 5 points.\nFor guessing the result and goal difference or when a draw - 3 points.\nFor guessed result - 2 points.</string>
     <string name="fragment_create_prediction_title">Predict the score of the match</string>
-    <string name="freagment_create_prediction_predict_button">Predict</string>
+    <string name="fragment_create_prediction_predict_button">Predict</string>
+    <string name="title_activity_settings">Settings</string>
 </resources>

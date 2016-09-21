@@ -1,6 +1,5 @@
 package biz.ddroid.bets.adapters;
 
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -73,7 +72,7 @@ public class CompletedPredictionsContentAdapter extends RecyclerView.Adapter<Com
         matchPrediction.setText(match.getBetTeam1() + " : " + match.getBetTeam2());
 
         TextView points = (TextView) cardView.findViewById(R.id.points);
-        points.setText(String.format(cardView.getContext().getString(R.string.points_formating), match.getPoints()));
+        points.setText(String.format(cardView.getContext().getString(R.string.points_formatted), match.getPoints()));
 
         TextView score = (TextView) cardView.findViewById(R.id.match_score);
         score.setText(match.getScoreTeam1() + " : " + match.getScoreTeam2());
