@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_account_profile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="biz.ddroid.bets.activities.AccountProfileActivity"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/account_image"
+            android:layout_width="@dimen/account_profile_activity_account_image_width"
+            android:layout_height="@dimen/account_profile_activity_account_image_height"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            app:srcCompat="@drawable/ic_account_circle_black_128dp"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/account_user_email"
+            android:text="mail@me.com"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/account_image"
+            android:layout_alignLeft="@+id/account_user_name"
+            android:layout_alignStart="@+id/account_user_name"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:text="User name"
+            android:id="@+id/account_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_above="@+id/account_user_email"
+            android:layout_toRightOf="@+id/account_image"
+            android:layout_toEndOf="@+id/account_image" />
+    </RelativeLayout>
+
+    <TextView
+        android:text="@string/account_predictions_count_formatted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/account_user_predictions_count"
+        android:paddingTop="8dp" />
+
+    <TextView
+        android:text="@string/account_points_formatted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/account_user_points"
+        android:paddingTop="8dp" />
+
+    <TextView
+        android:text="@string/account_tours_wins_formatted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/account_user_tours_wins"
+        android:paddingTop="8dp" />
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+        <TextView
+            android:text="@string/account_friends_count_formatted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/account_user_friends_count"
+            android:paddingTop="8dp" />
+
+        <ImageView
+            android:layout_height="48dp"
+            app:srcCompat="@drawable/ic_person_add_black_24dp"
+            android:id="@+id/account_add_friend"
+            android:layout_width="48dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:padding="12dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:id="@+id/friends_list" />
+</LinearLayout>

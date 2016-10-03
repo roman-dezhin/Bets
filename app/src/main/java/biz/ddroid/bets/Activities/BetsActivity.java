@@ -1,6 +1,10 @@
 package biz.ddroid.bets.activities;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -20,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +93,17 @@ public class BetsActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View header = navigationView.getHeaderView(0);
+
+        ImageView header_user_photo = (ImageView) header.findViewById(R.id.navigation_drawer_user_account_picture_profile);
+        String avatarUriString = SharedPrefs.getAvatar(this);
+        Bitmap avatarBitmap = BitmapFactory.decodeFile(avatarUriString);
+        if (avatarUriString.equals("") || avatarBitmap == null) {
+            header_user_photo.setImageResource(R.drawable.ic_account_circle_white_64dp);
+        } else {
+            header_user_photo.setImageURI(Uri.parse(avatarUriString));
+            avatarBitmap.recycle();
+        }
+
         TextView header_user_name = (TextView) header.findViewById(R.id.header_username);
         if (header_user_name != null) {
             header_user_name.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
@@ -211,7 +227,8 @@ public class BetsActivity extends AppCompatActivity
         if (id == R.id.matches) {
             viewPager.setCurrentItem(0);
         } else if (id == R.id.profile) {
-
+            Intent intent = new Intent(getApplicationContext(), AccountProfileActivity.class);
+            startActivity(intent);
         } else if (id == R.id.results) {
             Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
             startActivity(intent);

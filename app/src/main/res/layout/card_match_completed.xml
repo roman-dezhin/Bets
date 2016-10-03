@@ -130,7 +130,7 @@
                 android:textSize="16sp"
                 android:layout_margin="2dp"
                 android:textColor="@color/colorPrimary"
-                android:layout_below="@+id/icon_team1"
+                android:layout_below="@+id/points"
                 android:gravity="right"
                 android:layout_centerHorizontal="true" />
     </RelativeLayout>

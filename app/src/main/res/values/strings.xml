@@ -31,9 +31,14 @@
     <string name="tab_results_world">World</string>
     <string name="tab_statistics_friends">Friends</string>
     <string name="tab_statistics_world">World</string>
-    <string name="betsCount_formatted">"Bets count: %1$d"</string>
-    <string name="friendsPredictions">"Friends predictions:"</string>
+    <string name="predictions_count_formatted">"Predictions count: %1$d"</string>
+    <string name="friends_predictions">"Friends predictions:"</string>
     <string name="points_formatted">"Points: %1$d"</string>
+
+    <string name="account_predictions_count_formatted">"Predictions count: %1$d"</string>
+    <string name="account_friends_count_formatted">"Friends count: %1$d"</string>
+    <string name="account_points_formatted">"Points: %1$d"</string>
+    <string name="account_tours_wins_formatted">"Tournaments wins: %1$d"</string>
 
     <string name="matches">Matches</string>
     <string name="results">Results</string>
@@ -51,4 +56,9 @@
     <string name="fragment_create_prediction_title">Predict the score of the match</string>
     <string name="fragment_create_prediction_predict_button">Predict</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="functionality_under_developing">This functionality is under developing</string>
+    <string name="avatar_dialog_title">Add Photo!</string>
+    <string name="avatar_dialog_from_camera">Take Photo</string>
+    <string name="avatar_dialog_from_gallery">Choose from Library</string>
+    <string name="avatar_dialog_cancel">Cancel</string>
 </resources>

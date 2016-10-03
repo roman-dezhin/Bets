@@ -10,17 +10,16 @@
 
     <LinearLayout
         android:id="@+id/navigation_drawer_account_section"
-        android:gravity="bottom"
         android:background="@drawable/side_nav_bar"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/spacing_8"
         android:paddingEnd="@dimen/activity_horizontal_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingStart="@dimen/activity_horizontal_margin"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:layout_aspectRatio="178%"
-        app:layout_widthPercent="100%">
+        app:layout_widthPercent="100%"
+        android:gravity="bottom">
 
         <ImageView
             android:id="@+id/navigation_drawer_user_account_picture_profile"

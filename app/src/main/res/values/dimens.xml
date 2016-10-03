@@ -10,4 +10,6 @@
     <dimen name="spacing_8">8dp</dimen>
     <dimen name="nav_drawer_profile_image_size">64dp</dimen>
     <dimen name="spacing_56">56dp</dimen>
+    <dimen name="account_profile_activity_account_image_width">128dp</dimen>
+    <dimen name="account_profile_activity_account_image_height">128dp</dimen>
 </resources>
