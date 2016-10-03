@@ -180,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         showProgress(true);
 
-        userServices.isUserExist(username, new JsonHttpResponseHandler() {
+        userServices.isUserExists(username, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Log.v(TAG, response.toString());

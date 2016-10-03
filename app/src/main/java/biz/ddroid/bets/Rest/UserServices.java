@@ -7,13 +7,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserServices {
+    public final static String USER_ID = "user_id";
+    public final static String USER_DATA = "data";
+    public final static String USER_DATA_PICTURE = "picture_upload";
+
     private ServicesClient client;
 
     public UserServices(ServicesClient c) {
         client = c;
     }
 
-    public void isUserExist(String username, AsyncHttpResponseHandler responseHandler) {
+    public void isUserExists(String username, AsyncHttpResponseHandler responseHandler) {
         RequestParams params = new RequestParams("parameters[name]", username);
         client.get("user", params, responseHandler);
     }
@@ -40,6 +44,10 @@ public class UserServices {
             e.printStackTrace();
         }
         client.post("user/login", params, responseHandler);
+    }
+
+    public void update(String uid, JSONObject params, AsyncHttpResponseHandler responseHandler) {
+        client.put("user/" + uid, params, responseHandler);
     }
 
     public void logout(AsyncHttpResponseHandler responseHandler) {

@@ -2,6 +2,7 @@ package biz.ddroid.bets.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,20 +11,35 @@ import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Base64;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 
+import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
+import biz.ddroid.bets.rest.FileServices;
+import biz.ddroid.bets.rest.ServicesClient;
+import biz.ddroid.bets.rest.UserServices;
 import biz.ddroid.bets.utils.ImageUtils;
 import biz.ddroid.bets.utils.SharedPrefs;
+import cz.msebera.android.httpclient.Header;
 
 public class AccountProfileActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA = 1;
@@ -115,6 +131,7 @@ public class AccountProfileActivity extends AppCompatActivity {
                     Uri avatarUri = copyFile(data.getData());
                     avatar.setImageBitmap(BitmapFactory.decodeFile(avatarUri.getPath()));
                     SharedPrefs.saveAvatar(this, avatarUri.getPath());
+                    sendAvatarToServer(avatarUri.getPath());
                 }
                 break;
             case REQUEST_CAMERA:
@@ -123,6 +140,7 @@ public class AccountProfileActivity extends AppCompatActivity {
                         Uri avatarUri = copyFile(Uri.fromFile(avatarFileTmp));
                         avatar.setImageBitmap(BitmapFactory.decodeFile(avatarUri.getPath()));
                         SharedPrefs.saveAvatar(this, avatarUri.getPath());
+                        sendAvatarToServer(avatarUri.getPath());
                     }
                 }
                 break;
@@ -143,6 +161,105 @@ public class AccountProfileActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendAvatarToServer(String fileUri) {
+        final ServicesClient servicesClient = BetApplication.getServicesClient();
+        servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
+        FileServices fileServices = new FileServices(servicesClient);
+        String uid = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.UID, "");
+
+        JSONObject params = new JSONObject();
+        Date date = new Date();
+        String filename = uid + "-" + date.getTime() + ".png";
+        ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+        BitmapFactory.decodeFile(fileUri).compress(Bitmap.CompressFormat.PNG, 100, byteArrayOS);
+        String file = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+        try {
+            params.put(FileServices.FILE_NAME, filename);
+            params.put(FileServices.FILE_PATH, FileServices.PATH_TO_FILE + filename);
+            params.put(FileServices.FILE, file);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        fileServices.create(params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        Log.v(TAG, "sendAvatarToServer()->fileServices.create()->onSuccess()");
+                        try {
+                            String fid = response.getString(FileServices.FILE_ID);
+                            updateUserAvatar(fid);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        super.onFailure(statusCode, headers, throwable, errorResponse);
+                        Log.v(TAG, "sendAvatarToServer()->fileServices.create()->onFailure()");
+                    }
+                }
+        );
+    }
+
+    private void updateUserAvatar(String fid) {
+        final ServicesClient servicesClient = BetApplication.getServicesClient();
+        servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
+        final FileServices fileServices = new FileServices(servicesClient);
+        UserServices userServices = new UserServices(servicesClient);
+        String uid = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.UID, "");
+
+
+        JSONObject picture = new JSONObject();
+        try {
+            picture.put(UserServices.USER_DATA_PICTURE, fid);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put(UserServices.USER_DATA, picture);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        userServices.update(uid, data, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.v(TAG, "updateUserAvatar()->userServices.update()->onSuccess()");
+                try {
+                    fileServices.delete(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.AVATAR_FILE_ID, ""), new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                        }
+                    });
+                    String fid = response.getJSONObject(UserServices.USER_DATA_PICTURE).getString(FileServices.FILE_ID);
+                    SharedPreferences settings = getSharedPreferences(SharedPrefs.PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString(SharedPrefs.AVATAR_FILE_ID, fid);
+                    editor.commit();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.v(TAG, "updateUserAvatar()->userServices.update()->onFailure()");
+            }
+        });
     }
 
     private Uri copyFile(Uri uri) {

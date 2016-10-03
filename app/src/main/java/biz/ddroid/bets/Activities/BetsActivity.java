@@ -1,6 +1,5 @@
 package biz.ddroid.bets.activities;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

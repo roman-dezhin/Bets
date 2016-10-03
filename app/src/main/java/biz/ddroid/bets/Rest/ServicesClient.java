@@ -91,6 +91,11 @@ public class ServicesClient {
         client.put(null, getAbsoluteUrl(url), se, "application/json", responseHandler);
     }
 
+    public void delete(String url, AsyncHttpResponseHandler responseHandler) {
+        this.setHeaders();
+        client.delete(getAbsoluteUrl(url), responseHandler);
+    }
+
     public void getToken(AsyncHttpResponseHandler responseHandler) {
         this.getRoot("services/session/token", new RequestParams(), responseHandler);
     }
