@@ -13,14 +13,14 @@ public class SharedPrefs {
     public static final String AVATAR = "Avatar";
     public static final String AVATAR_FILE_ID = "AvatarFileId";
 
-    public static void saveAvatar(Context context, String imagePath) {
+    public static void setPref(Context context, String name, String value) {
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString(AVATAR, imagePath);
+        editor.putString(name, value);
         editor.commit();
     }
 
-    public static String getAvatar(Context context) {
-        return context.getSharedPreferences(PREFS_NAME, 0).getString(AVATAR, "");
+    public static String getPref(Context context, String name) {
+        return context.getSharedPreferences(PREFS_NAME, 0).getString(name, "");
     }
 }

@@ -94,7 +94,7 @@ public class BetsActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
 
         ImageView header_user_photo = (ImageView) header.findViewById(R.id.navigation_drawer_user_account_picture_profile);
-        String avatarUriString = SharedPrefs.getAvatar(this);
+        String avatarUriString = SharedPrefs.getPref(this, SharedPrefs.AVATAR);
         Bitmap avatarBitmap = BitmapFactory.decodeFile(avatarUriString);
         if (avatarUriString.equals("") || avatarBitmap == null) {
             header_user_photo.setImageResource(R.drawable.ic_account_circle_white_64dp);

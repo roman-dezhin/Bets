@@ -35,10 +35,10 @@
     <string name="friends_predictions">"Friends predictions:"</string>
     <string name="points_formatted">"Points: %1$d"</string>
 
-    <string name="account_predictions_count_formatted">"Predictions count: %1$d"</string>
-    <string name="account_friends_count_formatted">"Friends count: %1$d"</string>
-    <string name="account_points_formatted">"Points: %1$d"</string>
-    <string name="account_tours_wins_formatted">"Tournaments wins: %1$d"</string>
+    <string name="account_predictions_count_formatted">"Predictions count: %1$s"</string>
+    <string name="account_friends_count_formatted">"Friends: %1$s"</string>
+    <string name="account_points_formatted">"Points: %1$s"</string>
+    <string name="account_tours_wins_formatted">"Tournaments wins: %1$s"</string>
 
     <string name="matches">Matches</string>
     <string name="results">Results</string>

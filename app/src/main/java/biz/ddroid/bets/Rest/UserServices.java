@@ -7,9 +7,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserServices {
-    public final static String USER_ID = "user_id";
     public final static String USER_DATA = "data";
     public final static String USER_DATA_PICTURE = "picture_upload";
+    public final static String USER_UID = "uid";
+    public final static String USER_NAME = "name";
+    public final static String USER_MAIL = "mail";
+    public final static String USER_TOUR_WINS = "field_tourwins";
+    public final static String USER_TOUR_WINS_LANG = "und";
+    public final static String USER_TOUR_WINS_VALUE = "value";
+    public final static String USER_PICTURE = "picture";
+    public final static String USER_PICTURE_URL = "url";
+    public final static String USER_PICTURE_FID = "fid";
+    public final static String USER_PREDICTIONS_COUNT = "predictions_count";
+    public final static String USER_POINTS = "points";
 
     private ServicesClient client;
 
@@ -46,11 +56,19 @@ public class UserServices {
         client.post("user/login", params, responseHandler);
     }
 
+    public void retrieve(String uid, AsyncHttpResponseHandler responseHandler) {
+        client.get("user/" + uid, null, responseHandler);
+    }
+
     public void update(String uid, JSONObject params, AsyncHttpResponseHandler responseHandler) {
         client.put("user/" + uid, params, responseHandler);
     }
 
     public void logout(AsyncHttpResponseHandler responseHandler) {
         client.post("user/logout", new JSONObject(), responseHandler);
+    }
+
+    public void statistics(String uid, AsyncHttpResponseHandler responseHandler) {
+        client.get("user/" + uid + "/statistics", new RequestParams(), responseHandler);
     }
 }

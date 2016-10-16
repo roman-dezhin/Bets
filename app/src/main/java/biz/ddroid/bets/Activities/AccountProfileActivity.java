@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
@@ -21,7 +22,10 @@ import android.util.Base64;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,7 +50,12 @@ public class AccountProfileActivity extends AppCompatActivity {
     private static final int SELECT_FILE = 2;
     private ImageView avatar;
     private String TAG = "AccountProfileActivity";
-    File avatarFile, avatarFileTmp;
+    private File avatarFile, avatarFileForCamera;
+    private final String AVATAR_FILE_NAME = "avatar.png";
+    private TextView accountUserPredictionCount;
+    private TextView accountUserPoints;
+    private TextView accountUserTourWins;
+    private TextView accountUserFriends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +63,8 @@ public class AccountProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_account_profile);
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        avatarFile = new File(getExternalFilesDir(null), "avatar.png");
-        avatarFileTmp = new File(getExternalFilesDir(null), "avatar_temp.png");
+        avatarFile = new File(getExternalFilesDir(null), AVATAR_FILE_NAME);
+        avatarFileForCamera = new File(getExternalFilesDir(null), "avatar_temp.png");
 
         avatar = (ImageView) findViewById(R.id.account_image);
         avatar.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +78,7 @@ public class AccountProfileActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int item) {
                         if (items[item].equals(getString(R.string.avatar_dialog_from_camera))) {
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(avatarFileTmp));
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(avatarFileForCamera));
                             if (intent.resolveActivity(getPackageManager()) != null) {
                                 startActivityForResult(intent, REQUEST_CAMERA);
                             }
@@ -86,7 +95,7 @@ public class AccountProfileActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-        String avatarUriString = SharedPrefs.getAvatar(this);
+        String avatarUriString = SharedPrefs.getPref(this, SharedPrefs.AVATAR);
         Bitmap avatarBitmap = BitmapFactory.decodeFile(avatarUriString);
         if (avatarUriString.equals("") || avatarBitmap == null) {
             avatar.setImageResource(R.drawable.ic_account_circle_black_128dp);
@@ -95,16 +104,21 @@ public class AccountProfileActivity extends AppCompatActivity {
             avatarBitmap.recycle();
         }
 
-        TextView account_user_name = (TextView) findViewById(R.id.account_user_name);
-        if (account_user_name != null) {
-            account_user_name.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
+        TextView accountUserName = (TextView) findViewById(R.id.account_user_name);
+        if (accountUserName != null) {
+            accountUserName.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
                     .getString(SharedPrefs.USERNAME, "Anonymous"));
         }
-        TextView account_user_email = (TextView) findViewById(R.id.account_user_email);
-        if (account_user_email != null) {
-            account_user_email.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
+        TextView accountUserEmail = (TextView) findViewById(R.id.account_user_email);
+        if (accountUserEmail != null) {
+            accountUserEmail.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
                     .getString(SharedPrefs.EMAIL, "email@domain.tld"));
         }
+
+        accountUserPredictionCount = (TextView) findViewById(R.id.account_user_predictions_count);
+        accountUserPoints = (TextView) findViewById(R.id.account_user_points);
+        accountUserTourWins = (TextView) findViewById(R.id.account_user_tours_wins);
+        accountUserFriends = (TextView) findViewById(R.id.account_user_friends_count);
 
         ImageView addFriend = (ImageView) findViewById(R.id.account_add_friend);
         addFriend.setOnClickListener(new View.OnClickListener() {
@@ -114,12 +128,14 @@ public class AccountProfileActivity extends AppCompatActivity {
                 Toast.makeText(AccountProfileActivity.this, getString(R.string.functionality_under_developing), Toast.LENGTH_SHORT).show();
             }
         });
+
+        getUserData();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        avatarFileTmp.delete();
+        avatarFileForCamera.delete();
     }
 
     @Override
@@ -130,22 +146,21 @@ public class AccountProfileActivity extends AppCompatActivity {
                 if(resultCode == RESULT_OK && data != null){
                     Uri avatarUri = copyFile(data.getData());
                     avatar.setImageBitmap(BitmapFactory.decodeFile(avatarUri.getPath()));
-                    SharedPrefs.saveAvatar(this, avatarUri.getPath());
+                    SharedPrefs.setPref(this, SharedPrefs.AVATAR, avatarUri.getPath());
                     sendAvatarToServer(avatarUri.getPath());
                 }
                 break;
             case REQUEST_CAMERA:
                 if(resultCode == RESULT_OK){
                     if (data == null) {
-                        Uri avatarUri = copyFile(Uri.fromFile(avatarFileTmp));
+                        Uri avatarUri = copyFile(Uri.fromFile(avatarFileForCamera));
                         avatar.setImageBitmap(BitmapFactory.decodeFile(avatarUri.getPath()));
-                        SharedPrefs.saveAvatar(this, avatarUri.getPath());
+                        SharedPrefs.setPref(this, SharedPrefs.AVATAR, avatarUri.getPath());
                         sendAvatarToServer(avatarUri.getPath());
                     }
                 }
                 break;
         }
-
     }
 
     @Override
@@ -161,6 +176,123 @@ public class AccountProfileActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getUserData() {
+        final ServicesClient servicesClient = BetApplication.getServicesClient();
+        servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
+        UserServices userServices = new UserServices(servicesClient);
+        final String uid = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.UID, "");
+        if (uid.equals("")) {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        userServices.retrieve(uid, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    if (response.get(UserServices.USER_UID).equals(uid)) {
+                        updateUserData(response);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+
+        userServices.statistics(uid, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    accountUserPredictionCount.setText(String.format(getString(R.string.account_predictions_count_formatted), response.getString(UserServices.USER_PREDICTIONS_COUNT)));
+                    accountUserPoints.setText(String.format(getString(R.string.account_points_formatted),response.getString(UserServices.USER_POINTS)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+    }
+
+    private void updateUserData(JSONObject user) {
+        try {
+            SharedPrefs.setPref(this, SharedPrefs.USERNAME, user.getString(UserServices.USER_NAME));
+            SharedPrefs.setPref(this, SharedPrefs.EMAIL, user.getString(UserServices.USER_MAIL));
+            if (!user.getJSONObject(UserServices.USER_PICTURE).getString(UserServices.USER_PICTURE_FID)
+                    .equals(SharedPrefs.getPref(this, SharedPrefs.AVATAR_FILE_ID))) {
+                SharedPrefs.setPref(this, SharedPrefs.AVATAR_FILE_ID, user.getJSONObject(UserServices.USER_PICTURE).getString(UserServices.USER_PICTURE_FID));
+                Picasso.with(this).load(user.getJSONObject(UserServices.USER_PICTURE).getString(UserServices.USER_PICTURE_URL))
+                        .into(new Target() {
+                            @Override
+                            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        File file = new File(getExternalFilesDir(null), AVATAR_FILE_NAME);
+                                        try {
+                                            file.createNewFile();
+                                            FileOutputStream ostream = new FileOutputStream(file);
+                                            bitmap.compress(Bitmap.CompressFormat.PNG,100,ostream);
+                                            ostream.close();
+                                            avatar.setImageBitmap(bitmap);
+                                        }
+                                        catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }).start();
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Drawable errorDrawable) {
+
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        });
+            }
+            accountUserTourWins.setText(String.format(getString(R.string.account_tours_wins_formatted),
+                    user.getJSONObject(UserServices.USER_TOUR_WINS)
+                    .getJSONArray(UserServices.USER_TOUR_WINS_LANG).getJSONObject(0)
+                    .getString(UserServices.USER_TOUR_WINS_VALUE)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendAvatarToServer(String fileUri) {
