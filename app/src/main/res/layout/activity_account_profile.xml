@@ -27,16 +27,15 @@
 
         <TextView
             android:id="@+id/account_user_email"
-            android:text="mail@me.com"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/account_image"
             android:layout_alignLeft="@+id/account_user_name"
             android:layout_alignStart="@+id/account_user_name"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/profile_user_s_avatar" />
 
         <TextView
-            android:text="User name"
             android:id="@+id/account_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,21 +48,18 @@
     </RelativeLayout>
 
     <TextView
-        android:text="@string/account_predictions_count_formatted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/account_user_predictions_count"
         android:paddingTop="8dp" />
 
     <TextView
-        android:text="@string/account_points_formatted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/account_user_points"
         android:paddingTop="8dp" />
 
     <TextView
-        android:text="@string/account_tours_wins_formatted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/account_user_tours_wins"
@@ -75,7 +71,6 @@
         android:layout_height="wrap_content"
         android:weightSum="1">
         <TextView
-            android:text="@string/account_friends_count_formatted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/account_user_friends_count"
@@ -93,7 +88,8 @@
             android:layout_alignParentEnd="true"
             android:padding="12dp"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/profile_add_friend" />
     </RelativeLayout>
 
     <ListView

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Base64;
@@ -34,10 +35,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
+import biz.ddroid.bets.adapters.FriendsArrayAdapter;
+import biz.ddroid.bets.pojo.Friend;
 import biz.ddroid.bets.rest.FileServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.rest.UserServices;
@@ -48,6 +52,11 @@ import cz.msebera.android.httpclient.Header;
 public class AccountProfileActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
+    private static final String FRIENDS_LIST = "friends_list";
+    private static final String PREDICTION_COUNT = "prediction_count";
+    private static final String POINTS = "points";
+    private static final String TOUR_WINS = "tour_wins";
+    private static final String FRIENDS_COUNT = "friends_count";
     private ImageView avatar;
     private String TAG = "AccountProfileActivity";
     private File avatarFile, avatarFileForCamera;
@@ -55,7 +64,9 @@ public class AccountProfileActivity extends AppCompatActivity {
     private TextView accountUserPredictionCount;
     private TextView accountUserPoints;
     private TextView accountUserTourWins;
-    private TextView accountUserFriends;
+    private TextView accountUserFriendsCount;
+    private ListView friendsList;
+    private ArrayList<Friend> friends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +129,7 @@ public class AccountProfileActivity extends AppCompatActivity {
         accountUserPredictionCount = (TextView) findViewById(R.id.account_user_predictions_count);
         accountUserPoints = (TextView) findViewById(R.id.account_user_points);
         accountUserTourWins = (TextView) findViewById(R.id.account_user_tours_wins);
-        accountUserFriends = (TextView) findViewById(R.id.account_user_friends_count);
+        accountUserFriendsCount = (TextView) findViewById(R.id.account_user_friends_count);
 
         ImageView addFriend = (ImageView) findViewById(R.id.account_add_friend);
         addFriend.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +140,18 @@ public class AccountProfileActivity extends AppCompatActivity {
             }
         });
 
-        getUserData();
+        friendsList = (ListView) findViewById(R.id.friends_list);
+
+        if (savedInstanceState != null) {
+            friends = savedInstanceState.getParcelableArrayList(FRIENDS_LIST);
+            FriendsArrayAdapter arrayAdapter = new FriendsArrayAdapter(AccountProfileActivity.this, friends);
+            friendsList.setAdapter(arrayAdapter);
+            accountUserPredictionCount.setText(savedInstanceState.getString(PREDICTION_COUNT));
+            accountUserPoints.setText(savedInstanceState.getString(POINTS));
+            accountUserTourWins.setText(savedInstanceState.getString(TOUR_WINS));
+            accountUserFriendsCount.setText(savedInstanceState.getString(FRIENDS_COUNT));
+        }
+        else getUserData();
     }
 
     @Override
@@ -178,6 +200,16 @@ public class AccountProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(FRIENDS_LIST, friends);
+        outState.putString(PREDICTION_COUNT, accountUserPredictionCount.getText().toString());
+        outState.putString(POINTS, accountUserPoints.getText().toString());
+        outState.putString(TOUR_WINS, accountUserTourWins.getText().toString());
+        outState.putString(FRIENDS_COUNT, accountUserFriendsCount.getText().toString());
+    }
+
     private void getUserData() {
         final ServicesClient servicesClient = BetApplication.getServicesClient();
         servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
@@ -189,16 +221,6 @@ public class AccountProfileActivity extends AppCompatActivity {
             finish();
         }
         userServices.retrieve(uid, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                super.onSuccess(statusCode, headers, responseString);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
-            }
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -215,19 +237,15 @@ public class AccountProfileActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                Log.v(TAG, "userServices.retrieve: onFinish");
+            }
         });
 
         userServices.statistics(uid, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                super.onSuccess(statusCode, headers, responseString);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
-            }
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -243,7 +261,48 @@ public class AccountProfileActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                Log.v(TAG, "userServices.statistics: onFinish");
+            }
         });
+
+        userServices.friends(uid, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                accountUserFriendsCount.setText(String.format(getString(R.string.account_friends_count_formatted), response.length()));
+                friends = parseFriendsResponse(response);
+                FriendsArrayAdapter arrayAdapter = new FriendsArrayAdapter(AccountProfileActivity.this, friends);
+                friendsList.setAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                Log.v(TAG, "userServices.friends: onFinish");
+            }
+        });
+    }
+
+    private ArrayList<Friend> parseFriendsResponse(JSONArray response) {
+        ArrayList<Friend> friends = new ArrayList<>();
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                JSONObject ob = response.getJSONObject(i);
+                friends.add(new Friend(ob.getInt(UserServices.USER_UID), ob.getString(UserServices.USER_NAME), ob.getString(UserServices.USER_AVATAR)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return friends;
     }
 
     private void updateUserData(JSONObject user) {
@@ -316,25 +375,30 @@ public class AccountProfileActivity extends AppCompatActivity {
         }
 
         fileServices.create(params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        super.onSuccess(statusCode, headers, response);
-                        Log.v(TAG, "sendAvatarToServer()->fileServices.create()->onSuccess()");
-                        try {
-                            String fid = response.getString(FileServices.FILE_ID);
-                            updateUserAvatar(fid);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        Log.v(TAG, "sendAvatarToServer()->fileServices.create()->onFailure()");
-                    }
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.v(TAG, "sendAvatarToServer()->fileServices.create()->onSuccess()");
+                try {
+                    String fid = response.getString(FileServices.FILE_ID);
+                    updateUserAvatar(fid);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-        );
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.v(TAG, "sendAvatarToServer()->fileServices.create()->onFailure()");
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                Log.v(TAG, "fileServices.creates: onFinish");
+            }
+        });
     }
 
     private void updateUserAvatar(String fid) {
@@ -390,6 +454,12 @@ public class AccountProfileActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 Log.v(TAG, "updateUserAvatar()->userServices.update()->onFailure()");
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+                Log.v(TAG, "userServices.update: onFinish");
             }
         });
     }

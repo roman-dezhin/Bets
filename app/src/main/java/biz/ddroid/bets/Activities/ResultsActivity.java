@@ -72,11 +72,6 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
             return true;
         }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         if (id == R.id.action_refresh) {
             Log.v(TAG, "action_refresh: " + viewPager.getCurrentItem());
             menuItem = item;

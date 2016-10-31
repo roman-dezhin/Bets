@@ -12,6 +12,7 @@ public class UserServices {
     public final static String USER_UID = "uid";
     public final static String USER_NAME = "name";
     public final static String USER_MAIL = "mail";
+    public final static String USER_AVATAR = "avatar";
     public final static String USER_TOUR_WINS = "field_tourwins";
     public final static String USER_TOUR_WINS_LANG = "und";
     public final static String USER_TOUR_WINS_VALUE = "value";
@@ -70,5 +71,9 @@ public class UserServices {
 
     public void statistics(String uid, AsyncHttpResponseHandler responseHandler) {
         client.get("user/" + uid + "/statistics", new RequestParams(), responseHandler);
+    }
+
+    public void friends(String uid, AsyncHttpResponseHandler responseHandler) {
+        client.get("user/" + uid + "/friends", new RequestParams(), responseHandler);
     }
 }

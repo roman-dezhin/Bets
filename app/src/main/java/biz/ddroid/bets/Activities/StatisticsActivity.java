@@ -68,11 +68,6 @@ public class StatisticsActivity extends AppCompatActivity implements OnFragmentR
             return true;
         }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         if (id == R.id.action_refresh) {
             Log.v(TAG, "action_refresh: " + viewPager.getCurrentItem());
             menuItem = item;

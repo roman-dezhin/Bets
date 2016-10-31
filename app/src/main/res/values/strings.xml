@@ -36,7 +36,7 @@
     <string name="points_formatted">"Points: %1$d"</string>
 
     <string name="account_predictions_count_formatted">"Predictions count: %1$s"</string>
-    <string name="account_friends_count_formatted">"Friends: %1$s"</string>
+    <string name="account_friends_count_formatted">"Friends: %1$d"</string>
     <string name="account_points_formatted">"Points: %1$s"</string>
     <string name="account_tours_wins_formatted">"Tournaments wins: %1$s"</string>
 
@@ -61,4 +61,6 @@
     <string name="avatar_dialog_from_camera">Take Photo</string>
     <string name="avatar_dialog_from_gallery">Choose from Library</string>
     <string name="avatar_dialog_cancel">Cancel</string>
+    <string name="profile_user_s_avatar">User\'s avatar</string>
+    <string name="profile_add_friend">Add friend</string>
 </resources>

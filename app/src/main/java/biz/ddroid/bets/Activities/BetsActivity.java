@@ -200,11 +200,6 @@ public class BetsActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         if (id == R.id.action_refresh) {
             Log.v(TAG, "action_refresh: " + viewPager.getCurrentItem());
             menuItem = item;
@@ -237,7 +232,6 @@ public class BetsActivity extends AppCompatActivity
         } else if (id == R.id.rules) {
             Intent intent = new Intent(getApplicationContext(), RulesActivity.class);
             startActivity(intent);
-        } else if (id == R.id.settings) {
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -281,7 +275,7 @@ public class BetsActivity extends AppCompatActivity
         private List<String> mFragmentTitleList = new ArrayList<>();
         private Map<Integer, String> mFragmentTags;
         private FragmentManager mFragmentManager;
-        public Adapter(FragmentManager manager, List<String> titleList) {
+        Adapter(FragmentManager manager, List<String> titleList) {
             super(manager);
             mFragmentManager = manager;
             mFragmentTags = new HashMap<>();
@@ -318,7 +312,7 @@ public class BetsActivity extends AppCompatActivity
             return obj;
         }
 
-        public Fragment getFragment(int position) {
+        Fragment getFragment(int position) {
             String tag = mFragmentTags.get(position);
             if (tag == null)
                 return null;
