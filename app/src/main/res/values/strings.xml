@@ -63,4 +63,10 @@
     <string name="avatar_dialog_cancel">Cancel</string>
     <string name="profile_user_s_avatar">User\'s avatar</string>
     <string name="profile_add_friend">Add friend</string>
+    <string name="account_profile_menu_edit">Edit</string>
+    <string name="account_profile_username">Name</string>
+    <string name="account_profile_password">Password</string>
+    <string name="account_edit_save">Save</string>
+    <string name="account_edit_email">Email</string>
+
 </resources>

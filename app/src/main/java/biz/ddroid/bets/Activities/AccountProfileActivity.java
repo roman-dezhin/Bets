@@ -9,10 +9,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -41,15 +43,21 @@ import java.util.Date;
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.adapters.FriendsArrayAdapter;
+import biz.ddroid.bets.fragments.AccountProfileEditFragment;
+import biz.ddroid.bets.fragments.CreatePredictionFragment;
+import biz.ddroid.bets.fragments.NewPredictionsFragment;
+import biz.ddroid.bets.fragments.PendingPredictionsFragment;
 import biz.ddroid.bets.pojo.Friend;
 import biz.ddroid.bets.rest.FileServices;
+import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.rest.UserServices;
 import biz.ddroid.bets.utils.ImageUtils;
+import biz.ddroid.bets.utils.NetworkUtils;
 import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
-public class AccountProfileActivity extends AppCompatActivity {
+public class AccountProfileActivity extends AppCompatActivity implements AccountProfileEditFragment.OnFragmentInteractionListener {
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
     private static final String FRIENDS_LIST = "friends_list";
@@ -61,6 +69,8 @@ public class AccountProfileActivity extends AppCompatActivity {
     private String TAG = "AccountProfileActivity";
     private File avatarFile, avatarFileForCamera;
     private final String AVATAR_FILE_NAME = "avatar.png";
+    private TextView accountUserName;
+    private TextView accountUserEmail;
     private TextView accountUserPredictionCount;
     private TextView accountUserPoints;
     private TextView accountUserTourWins;
@@ -115,15 +125,13 @@ public class AccountProfileActivity extends AppCompatActivity {
             avatarBitmap.recycle();
         }
 
-        TextView accountUserName = (TextView) findViewById(R.id.account_user_name);
+        accountUserName = (TextView) findViewById(R.id.account_user_name);
         if (accountUserName != null) {
-            accountUserName.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
-                    .getString(SharedPrefs.USERNAME, "Anonymous"));
+            accountUserName.setText(SharedPrefs.getPref(this, SharedPrefs.USERNAME));
         }
-        TextView accountUserEmail = (TextView) findViewById(R.id.account_user_email);
+        accountUserEmail = (TextView) findViewById(R.id.account_user_email);
         if (accountUserEmail != null) {
-            accountUserEmail.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
-                    .getString(SharedPrefs.EMAIL, "email@domain.tld"));
+            accountUserEmail.setText(SharedPrefs.getPref(this, SharedPrefs.EMAIL));
         }
 
         accountUserPredictionCount = (TextView) findViewById(R.id.account_user_predictions_count);
@@ -152,6 +160,13 @@ public class AccountProfileActivity extends AppCompatActivity {
             accountUserFriendsCount.setText(savedInstanceState.getString(FRIENDS_COUNT));
         }
         else getUserData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.account_profile, menu);
+        return true;
     }
 
     @Override
@@ -197,7 +212,67 @@ public class AccountProfileActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.account_profile_menu_edit) {
+            DialogFragment newFragment = AccountProfileEditFragment.newInstance(
+                    SharedPrefs.getPref(this, SharedPrefs.USERNAME),
+                    SharedPrefs.getPref(this, SharedPrefs.EMAIL));
+            newFragment.show(getSupportFragmentManager(), "dialog");
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(String name, String email, final String password) {
+        if (!NetworkUtils.isNetworkConnected(this)) {
+            Toast.makeText(this, R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        JSONObject params = new JSONObject();
+        try {
+            params.put(UserServices.USER_UPDATE_NAME, name);
+            params.put(UserServices.USER_UPDATE_MAIL, email);
+            params.put(UserServices.USER_UPDATE_CONF_MAIL, SharedPrefs.getPref(this, SharedPrefs.EMAIL));
+            params.put(UserServices.USER_UPDATE_PASSWORD, password);
+            params.put(UserServices.USER_UPDATE_CURRENT_PASSWORD, SharedPrefs.getPref(this, SharedPrefs.PASSWORD));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final ServicesClient servicesClient = BetApplication.getServicesClient();
+        servicesClient.setToken(SharedPrefs.getPref(this, SharedPrefs.TOKEN));
+        UserServices userServices = new UserServices(servicesClient);
+        userServices.update(SharedPrefs.getPref(this, SharedPrefs.UID), params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
+                try {
+                    SharedPrefs.setPref(AccountProfileActivity.this, SharedPrefs.USERNAME, response.getString(UserServices.USER_NAME));
+                    accountUserName.setText(response.getString(UserServices.USER_NAME));
+                    SharedPrefs.setPref(AccountProfileActivity.this, SharedPrefs.EMAIL, response.getString(UserServices.USER_MAIL));
+                    accountUserEmail.setText(response.getString(UserServices.USER_MAIL));
+                    if (!password.isEmpty()) {
+                        SharedPrefs.setPref(AccountProfileActivity.this, SharedPrefs.PASSWORD, password);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers,  Throwable error, JSONObject response) {
+                Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
+                Log.v(TAG, "onFragmentInteraction: error: " + error.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers,  Throwable error, JSONArray response) {
+                Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
+                Log.v(TAG, "onFragmentInteraction: error: " + error.toString());
+            }
+        });
     }
 
     @Override
@@ -212,9 +287,9 @@ public class AccountProfileActivity extends AppCompatActivity {
 
     private void getUserData() {
         final ServicesClient servicesClient = BetApplication.getServicesClient();
-        servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
+        servicesClient.setToken(SharedPrefs.getPref(this, SharedPrefs.TOKEN));
         UserServices userServices = new UserServices(servicesClient);
-        final String uid = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.UID, "");
+        final String uid = SharedPrefs.getPref(this, SharedPrefs.UID);
         if (uid.equals("")) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
@@ -356,9 +431,9 @@ public class AccountProfileActivity extends AppCompatActivity {
 
     private void sendAvatarToServer(String fileUri) {
         final ServicesClient servicesClient = BetApplication.getServicesClient();
-        servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
+        servicesClient.setToken(SharedPrefs.getPref(this, SharedPrefs.TOKEN));
         FileServices fileServices = new FileServices(servicesClient);
-        String uid = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.UID, "");
+        String uid = SharedPrefs.getPref(this, SharedPrefs.UID);
 
         JSONObject params = new JSONObject();
         Date date = new Date();
@@ -403,10 +478,10 @@ public class AccountProfileActivity extends AppCompatActivity {
 
     private void updateUserAvatar(String fid) {
         final ServicesClient servicesClient = BetApplication.getServicesClient();
-        servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
+        servicesClient.setToken(SharedPrefs.getPref(this, SharedPrefs.TOKEN));
         final FileServices fileServices = new FileServices(servicesClient);
         UserServices userServices = new UserServices(servicesClient);
-        String uid = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.UID, "");
+        String uid = SharedPrefs.getPref(this, SharedPrefs.UID);
 
 
         JSONObject picture = new JSONObject();

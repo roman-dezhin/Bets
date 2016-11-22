@@ -21,6 +21,11 @@ public class UserServices {
     public final static String USER_PICTURE_FID = "fid";
     public final static String USER_PREDICTIONS_COUNT = "predictions_count";
     public final static String USER_POINTS = "points";
+    public final static String USER_UPDATE_NAME = "name";
+    public final static String USER_UPDATE_MAIL = "mail";
+    public final static String USER_UPDATE_CONF_MAIL = "conf_mail";
+    public final static String USER_UPDATE_PASSWORD = "pass";
+    public final static String USER_UPDATE_CURRENT_PASSWORD = "current_pass";
 
     private ServicesClient client;
 
