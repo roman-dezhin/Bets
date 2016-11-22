@@ -265,12 +265,14 @@ public class AccountProfileActivity extends AppCompatActivity implements Account
             public void onFailure(int statusCode, Header[] headers,  Throwable error, JSONObject response) {
                 Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
                 Log.v(TAG, "onFragmentInteraction: error: " + error.toString());
+                //TODO: уведомление пользователю об ошибке
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers,  Throwable error, JSONArray response) {
                 Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
                 Log.v(TAG, "onFragmentInteraction: error: " + error.toString());
+                //TODO: уведомление пользователю об ошибке
             }
         });
     }
