@@ -1,16 +1,20 @@
 package biz.ddroid.bets.activities;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +41,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -60,6 +65,7 @@ import cz.msebera.android.httpclient.Header;
 public class AccountProfileActivity extends AppCompatActivity implements AccountProfileEditFragment.OnFragmentInteractionListener {
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private static final String FRIENDS_LIST = "friends_list";
     private static final String PREDICTION_COUNT = "prediction_count";
     private static final String POINTS = "points";
@@ -77,6 +83,7 @@ public class AccountProfileActivity extends AppCompatActivity implements Account
     private TextView accountUserFriendsCount;
     private ListView friendsList;
     private ArrayList<Friend> friends;
+    private Uri imageFromGallery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,10 +188,8 @@ public class AccountProfileActivity extends AppCompatActivity implements Account
         switch(requestCode) {
             case SELECT_FILE:
                 if(resultCode == RESULT_OK && data != null){
-                    Uri avatarUri = copyFile(data.getData());
-                    avatar.setImageBitmap(BitmapFactory.decodeFile(avatarUri.getPath()));
-                    SharedPrefs.setPref(this, SharedPrefs.AVATAR, avatarUri.getPath());
-                    sendAvatarToServer(avatarUri.getPath());
+                    imageFromGallery = data.getData();
+                    checkPermissionToReadFromGallery();
                 }
                 break;
             case REQUEST_CAMERA:
@@ -285,6 +290,30 @@ public class AccountProfileActivity extends AppCompatActivity implements Account
         outState.putString(POINTS, accountUserPoints.getText().toString());
         outState.putString(TOUR_WINS, accountUserTourWins.getText().toString());
         outState.putString(FRIENDS_COUNT, accountUserFriendsCount.getText().toString());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay!
+                    setAvatarFileFromGallery();
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     private void getUserData() {
@@ -574,5 +603,27 @@ public class AccountProfileActivity extends AppCompatActivity implements Account
             }
         }
         return Uri.fromFile(avatarFile);
+    }
+
+    private void checkPermissionToReadFromGallery() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        } else {
+            setAvatarFileFromGallery();
+        }
+    }
+
+    private void setAvatarFileFromGallery() {
+        if (imageFromGallery != null) {
+            Uri avatarUri = copyFile(imageFromGallery);
+            avatar.setImageBitmap(BitmapFactory.decodeFile(avatarUri.getPath()));
+            SharedPrefs.setPref(this, SharedPrefs.AVATAR, avatarUri.getPath());
+            sendAvatarToServer(avatarUri.getPath());
+        }
     }
 }
