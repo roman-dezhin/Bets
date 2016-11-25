@@ -147,7 +147,7 @@ public class BetsActivity extends AppCompatActivity
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.v(TAG, "onFragmentInteraction: response: " + response.toString());
-                Toast.makeText(BetsActivity.this, "Success predict", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BetsActivity.this, R.string.success_prediction, Toast.LENGTH_SHORT).show();
                 NewPredictionsFragment newPredictionsFragment = (NewPredictionsFragment) adapter.getFragment(PREDICTIONS_STATUS_NEW);
                 newPredictionsFragment.refreshMatches(servicesClient);
                 PendingPredictionsFragment pendingPredictionsFragment = (PendingPredictionsFragment) adapter.getFragment(PREDICTIONS_STATUS_PENDING);

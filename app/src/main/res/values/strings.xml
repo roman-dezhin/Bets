@@ -68,5 +68,6 @@
     <string name="account_profile_password">Password</string>
     <string name="account_edit_save">Save</string>
     <string name="account_edit_email">Email</string>
+    <string name="success_prediction">Success predict</string>
 
 </resources>

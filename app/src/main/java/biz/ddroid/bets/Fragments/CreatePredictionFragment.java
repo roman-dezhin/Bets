@@ -65,6 +65,8 @@ public class CreatePredictionFragment extends DialogFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                numberPicker_home_team.clearFocus();
+                numberPicker_visitor_team.clearFocus();
                 onPredictionButtonPressed(mMatch.getId(), numberPicker_home_team.getValue(), numberPicker_visitor_team.getValue());
 
             }
