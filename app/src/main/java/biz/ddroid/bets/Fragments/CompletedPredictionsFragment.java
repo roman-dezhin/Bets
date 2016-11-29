@@ -20,6 +20,7 @@ import java.util.Date;
 
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.adapters.CompletedPredictionsContentAdapter;
+import biz.ddroid.bets.listener.EndlessRecyclerOnScrollListener;
 import biz.ddroid.bets.pojo.Match;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
@@ -30,7 +31,7 @@ public class CompletedPredictionsFragment extends BasePredictionsFragment {
 
     private CompletedPredictionsContentAdapter adapter;
 
-    private String TAG = "CompletedPredictionsFragment";
+    private String TAG = CompletedPredictionsFragment.class.getSimpleName();
 
     public CompletedPredictionsFragment() {
         // Required empty public constructor
@@ -61,7 +62,18 @@ public class CompletedPredictionsFragment extends BasePredictionsFragment {
         });
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore() {
+                requestDateTime.setVisibility(View.GONE);
+                dataInfo.setVisibility(View.VISIBLE);
+                dataInfo.setText(R.string.loading);
+                mCurrentPage++;
+                loadNextDataFromApi(mCurrentPage);
+            }
+        });
 
         requestTime = new Date();
         if (savedInstanceState != null) {
@@ -71,6 +83,7 @@ public class CompletedPredictionsFragment extends BasePredictionsFragment {
                 isResponseEmpty = true;
             }
             requestTime.setTime(savedInstanceState.getLong(STATE_REQUEST_TIME));
+            mCurrentPage = savedInstanceState.getInt(STATE_CURRENT_PAGE);
             adapter.setMatches(mMatches);
         } else {
             if (mMatches.isEmpty()) {
@@ -83,13 +96,19 @@ public class CompletedPredictionsFragment extends BasePredictionsFragment {
         return rootView;
     }
 
-    public void refreshMatches(ServicesClient servicesClient) {
+    public void loadNextDataFromApi(int pageNumber) {
         if (!NetworkUtils.isNetworkConnected(getActivity())) {
-            Toast.makeText(getActivity(), R.string.no_internet_connections, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.no_internet_connections, Toast.LENGTH_LONG).show();
             onFragmentRefreshed();
         }
         predictServices = new PredictServices(servicesClient);
-        predictServices.completedMatches(new AsyncHttpResponseHandler() {
+        JSONObject param = new JSONObject();
+        try {
+            param.put(PredictServices.PAGE, pageNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        predictServices.completedMatches(param, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (responseBody != null) Log.v(TAG, new String(responseBody));
@@ -110,11 +129,15 @@ public class CompletedPredictionsFragment extends BasePredictionsFragment {
         });
     }
 
-    protected void parseMatches(byte[] responseBody) {
+    public void refreshMatches(ServicesClient servicesClient) {
         mMatches.clear();
+        loadNextDataFromApi(0);
+    }
+
+    protected void parseMatches(byte[] responseBody) {
         try {
             JSONArray response = new JSONArray(new String(responseBody));
-            for (int i=0; i < response.length(); i++) {
+            for (int i = 0; i < response.length(); i++) {
                 JSONObject jsonMatch = response.getJSONObject(i);
                 JSONArray friendsPredictionsArray = jsonMatch.getJSONArray(PredictServices.FRIENDS_PREDICTIONS_AND_POINTS);
                 String friendPredictionsString = "";

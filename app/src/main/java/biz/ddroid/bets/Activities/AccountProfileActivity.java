@@ -330,6 +330,7 @@ public class AccountProfileActivity extends AppCompatActivity implements Account
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+                Log.v(TAG, "userServices.retrieve: onSuccess");
                 try {
                     if (response.get(UserServices.USER_UID).equals(uid)) {
                         updateUserData(response);
@@ -355,6 +356,7 @@ public class AccountProfileActivity extends AppCompatActivity implements Account
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+                Log.v(TAG, "userServices.statistics: onSuccess");
                 try {
                     accountUserPredictionCount.setText(String.format(getString(R.string.account_predictions_count_formatted), response.getString(UserServices.USER_PREDICTIONS_COUNT)));
                     accountUserPoints.setText(String.format(getString(R.string.account_points_formatted),response.getString(UserServices.USER_POINTS)));
@@ -379,6 +381,7 @@ public class AccountProfileActivity extends AppCompatActivity implements Account
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
+                Log.v(TAG, "userServices.friends: onSuccess");
                 accountUserFriendsCount.setText(String.format(getString(R.string.account_friends_count_formatted), response.length()));
                 friends = parseFriendsResponse(response);
                 FriendsArrayAdapter arrayAdapter = new FriendsArrayAdapter(AccountProfileActivity.this, friends);

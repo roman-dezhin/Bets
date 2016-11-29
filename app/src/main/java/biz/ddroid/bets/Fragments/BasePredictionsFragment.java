@@ -27,6 +27,7 @@ public abstract class BasePredictionsFragment extends Fragment {
     protected static final String ARG_BETS_STATUS = "predictions_status";
     protected static final String STATE_MATCHES = "state_matches";
     protected static final String STATE_REQUEST_TIME = "state_request_time";
+    protected static final String STATE_CURRENT_PAGE = "state_current_page";
 
     private int mPredictionsStatus;
     private OnFragmentInteractionListener mListener;
@@ -40,7 +41,8 @@ public abstract class BasePredictionsFragment extends Fragment {
     protected TextView dataInfo;
     protected boolean isResponseEmpty = true;
     protected boolean isRequestEnd = false;
-    private String TAG = "BasePredictionsFragment";
+    protected int mCurrentPage = 0;
+    private String TAG = BasePredictionsFragment.class.getSimpleName();
 
     public BasePredictionsFragment() {
         // Required empty public constructor
@@ -61,6 +63,7 @@ public abstract class BasePredictionsFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STATE_MATCHES, mMatches);
         outState.putLong(STATE_REQUEST_TIME, requestTime.getTime());
+        outState.putInt(STATE_CURRENT_PAGE, mCurrentPage);
     }
 
     @Override

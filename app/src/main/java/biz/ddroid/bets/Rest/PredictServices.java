@@ -3,6 +3,7 @@ package biz.ddroid.bets.rest;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class PredictServices {
@@ -44,6 +45,7 @@ public class PredictServices {
     public final static String STATISTIC_RESULTS = "results";
     public final static String STATISTIC_PERCENTS = "percents";
     public final static String STATISTIC_WINS = "wins";
+    public final static String PAGE = "page";
 
     public PredictServices(ServicesClient c) {
         client = c;
@@ -69,8 +71,8 @@ public class PredictServices {
         client.post("predict/pending", new JSONObject(), responseHandler);
     }
 
-    public void completedMatches(AsyncHttpResponseHandler responseHandler){
-        client.post("predict/completed", new JSONObject(), responseHandler);
+    public void completedMatches(JSONObject param, AsyncHttpResponseHandler responseHandler){
+        client.post("predict/completed", param, responseHandler);
     }
 
     public void results(JSONObject params, AsyncHttpResponseHandler responseHandler) {
