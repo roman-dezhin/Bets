@@ -29,9 +29,7 @@ public class ResultsInWorldContentAdapter extends BaseResultsRecyclerAdapter<Tou
         final TournamentResult result = get(position);
         holder.tourName.setText(result.getTourName());
 
-        //TODO: найти причину появления "чужих" TableRow в tableLayout
         holder.tableLayout.removeViews(1, holder.tableLayout.getChildCount() - 1);
-        // TODO: присвоить данные вьюхам
         for (TournamentResultRow row : result.getResults()) {
             final TableRow tableRow = (TableRow) LayoutInflater.from(holder.tableLayout.getContext()).inflate(R.layout.result_table_row, null);
             TextView tv1 = (TextView) tableRow.findViewById(R.id.username);

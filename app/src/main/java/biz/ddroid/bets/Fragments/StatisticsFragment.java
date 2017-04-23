@@ -131,7 +131,6 @@ public class StatisticsFragment extends BaseStatisticsFragment {
     }
 
     private void drawTableRows(List<Statistic> statistics) {
-        //TODO: найти причину повторения tableLayout и появления "чужих" TableRow в tableLayout
         tableLayout.removeViews(1, tableLayout.getChildCount() - 1);
 
         for (Statistic statistic : statistics) {

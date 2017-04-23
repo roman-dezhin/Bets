@@ -39,7 +39,6 @@ public class ResultsWithFriendsContentAdapter extends BaseResultsRecyclerAdapter
         Log.v(TAG, holder.tableLayout.toString());
         Log.v(TAG, s);*/
 
-        //TODO: найти причину повторения holder и tableLayout и появления "чужих" TableRow в tableLayout
         holder.tableLayout.removeViews(1, holder.tableLayout.getChildCount() - 1);
 
         for (TournamentResultRow row : result.getResults()) {
