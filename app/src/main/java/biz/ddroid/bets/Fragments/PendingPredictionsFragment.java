@@ -30,7 +30,7 @@ public class PendingPredictionsFragment extends BasePredictionsFragment {
 
     private PendingPredictionsContentAdapter adapter;
 
-    private String TAG = "PendingPredictionsFragment";
+    private String TAG = "PendingPredictionsFrag";
 
     public PendingPredictionsFragment() {
         // Required empty public constructor

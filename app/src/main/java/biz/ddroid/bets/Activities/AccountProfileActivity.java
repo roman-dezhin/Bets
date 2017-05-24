@@ -391,6 +391,7 @@ public class AccountProfileActivity extends AppCompatActivity implements Account
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.v(TAG, "userServices.friends: onFailure " + errorResponse.toString());
             }
 
             @Override

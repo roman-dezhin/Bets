@@ -19,3 +19,4 @@
 -keepclassmembers class * implements android.os.Parcelable {
     static ** CREATOR;
 }
+-dontwarn com.squareup.okhttp.**
