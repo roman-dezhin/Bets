@@ -35,6 +35,8 @@ public class PredictServices {
     public final static String RESULT_PREDICTIONS = "predictions";
     public final static String RESULT_SCORES = "scores";
     public final static String RESULT_RESULTS = "results";
+    public final static String RESULT_WINNER = "winner";
+    public final static int USER_IS_WINNER = 1;
     public final static String TOURNAMENT_IS_FINISHED = "tournament_is_finished";
     public final static String TOURNAMENT_FILTER = "tournament_status";
     public final static String RESULT_FILTER = "result_status";

@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#2E7D32</color>
     <color name="colorAccent">#FF4081</color>
     <color name="cardMatchTourName">@android:color/holo_blue_dark</color>
+    <color name="tournamentWinner">#ffcc00</color>
 </resources>

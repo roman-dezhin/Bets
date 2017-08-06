@@ -10,6 +10,7 @@ public class TournamentResultRow implements Parcelable {
     private int predictions;
     private int scores;
     private int results;
+    private int winner;
 
     public static final Creator<TournamentResultRow> CREATOR = new Creator<TournamentResultRow>() {
         @Override
@@ -35,14 +36,16 @@ public class TournamentResultRow implements Parcelable {
         parcel.writeInt(predictions);
         parcel.writeInt(scores);
         parcel.writeInt(results);
+        parcel.writeInt(winner);
     }
 
-    public TournamentResultRow(String name, int points, int predictions, int scores, int results) {
+    public TournamentResultRow(String name, int points, int predictions, int scores, int results, int winner) {
         this.name = name;
         this.points = points;
         this.predictions = predictions;
         this.scores = scores;
         this.results = results;
+        this.winner = winner;
     }
 
     protected TournamentResultRow(Parcel in) {
@@ -51,6 +54,7 @@ public class TournamentResultRow implements Parcelable {
         this.predictions = in.readInt();
         this.scores = in.readInt();
         this.results = in.readInt();
+        this.winner = in.readInt();
     }
 
     public String getName() {
@@ -73,6 +77,14 @@ public class TournamentResultRow implements Parcelable {
         return results;
     }
 
+    public int getWinner() {
+        return winner;
+    }
+
+    public void setWinner(int winner) {
+        this.winner = winner;
+    }
+
     @Override
     public String toString() {
         return "TournamentResultRow{" +
@@ -81,6 +93,7 @@ public class TournamentResultRow implements Parcelable {
                 ", predictions=" + predictions +
                 ", scores=" + scores +
                 ", results=" + results +
+                ", winner=" + winner +
                 '}';
     }
 }

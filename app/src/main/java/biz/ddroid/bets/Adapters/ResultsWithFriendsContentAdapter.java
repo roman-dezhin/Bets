@@ -1,5 +1,7 @@
 package biz.ddroid.bets.adapters;
 
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.pojo.TournamentResult;
 import biz.ddroid.bets.pojo.TournamentResultRow;
+import biz.ddroid.bets.rest.PredictServices;
 
 public class ResultsWithFriendsContentAdapter extends BaseResultsRecyclerAdapter<TournamentResult, ResultsWithFriendsContentAdapter.ViewHolder>  {
     private String TAG = "RWFCA";
@@ -30,21 +33,14 @@ public class ResultsWithFriendsContentAdapter extends BaseResultsRecyclerAdapter
         TournamentResult result = get(position);
         holder.tourName.setText(result.getTourName());
 
-        /*String s = "";
-        for (int i = 0; i < holder.tableLayout.getChildCount(); i++) {
-            s += holder.tableLayout.getChildAt(i).toString();
-        }
-        Log.v(TAG, result.getTourName());
-        Log.v(TAG, holder.toString());
-        Log.v(TAG, holder.tableLayout.toString());
-        Log.v(TAG, s);*/
-
         holder.tableLayout.removeViews(1, holder.tableLayout.getChildCount() - 1);
 
         for (TournamentResultRow row : result.getResults()) {
             TableRow tableRow = (TableRow) LayoutInflater.from(holder.tableLayout.getContext()).inflate(R.layout.result_table_row, null);
             TextView tv1 = (TextView) tableRow.findViewById(R.id.username);
             tv1.setText(row.getName());
+            if (row.getWinner() == PredictServices.USER_IS_WINNER)
+                tv1.setTextColor(ContextCompat.getColor(holder.tableLayout.getContext(), R.color.tournamentWinner));
 
             TextView tv2 = (TextView) tableRow.findViewById(R.id.points);
             tv2.setText(Integer.toString(row.getPoints()));

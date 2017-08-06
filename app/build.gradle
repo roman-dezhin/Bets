@@ -16,10 +16,10 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "SERVER_PREFIX", "\"dev.\""
+            buildConfigField "String", "SERVER", "\"http://dev.ddroid.biz\""
         }
         debug {
-            buildConfigField "String", "SERVER_PREFIX", "\"dev.\""
+            buildConfigField "String", "SERVER", "\"http://ddd.droman.stark.vps-private.net\""
         }
     }
 }

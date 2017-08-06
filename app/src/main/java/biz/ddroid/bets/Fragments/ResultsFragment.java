@@ -135,7 +135,8 @@ public class ResultsFragment extends BaseResultsFragment {
                             rows.getJSONObject(j).getInt(PredictServices.RESULT_POINTS),
                             rows.getJSONObject(j).getInt(PredictServices.RESULT_PREDICTIONS),
                             rows.getJSONObject(j).getInt(PredictServices.RESULT_SCORES),
-                            rows.getJSONObject(j).getInt(PredictServices.RESULT_RESULTS)));
+                            rows.getJSONObject(j).getInt(PredictServices.RESULT_RESULTS),
+                            rows.getJSONObject(j).getInt(PredictServices.RESULT_WINNER)));
                 }
                 TournamentResult result = new TournamentResult(
                         jsonResult.getInt(PredictServices.TOURNAMENT_ID),
