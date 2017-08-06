@@ -4,13 +4,13 @@
     <string name="rules_text">За угаданный счет - 5 баллов.\nЗа угаданный результат и разницу мячей или когда ничья - 3 балла.\nЗа угаданный результат - 2 балла.</string>
     <string name="account_edit_email">Емейл</string>
     <string name="account_edit_save">Сохранить</string>
-    <string name="account_friends_count_formatted">\"Друзей: %1$d\"</string>
-    <string name="account_points_formatted">\"Очков: %1$s\"</string>
-    <string name="account_predictions_count_formatted">\"Прогнозов: %1$s\"</string>
+    <string name="account_friends_count_formatted">Друзей: %1$d</string>
+    <string name="account_points_formatted">Очков: %1$s</string>
+    <string name="account_predictions_count_formatted">Прогнозов: %1$s</string>
     <string name="account_profile_menu_edit">Изменить</string>
     <string name="account_profile_password">Пароль</string>
     <string name="account_profile_username">Имя</string>
-    <string name="account_tours_wins_formatted">\"Tournaments wins: %1$s\"</string>
+    <string name="account_tours_wins_formatted">Tournaments wins: %1$s</string>
     <string name="action_settings">Настройки</string>
     <string name="action_sign_in_short">Войти</string>
     <string name="action_sign_in">Войти или зарегистрироваться</string>
@@ -23,11 +23,11 @@
     <string name="error_incorrect_password">Неверный пароль или имя пользователя</string>
     <string name="error_invalid_email">Неверный емейл</string>
     <string name="error_invalid_password">Пароль слишком короткий</string>
-    <string name="error_invalid_username">This username is invalid. Only a–Z 0–9 and _ must be.</string>
+    <string name="error_invalid_username">Это имя пользователя некорректно. Можно использовать a–Z, 0–9 и _.</string>
     <string name="fragment_create_prediction_predict_button">Прогноз</string>
     <string name="fragment_create_prediction_title">Сделать прогноз на матч</string>
-    <string name="friends_predictions">\"Прогнозы друзей:\"</string>
-    <string name="functionality_under_developing">Этот функционал еще разрабатвается</string>
+    <string name="friends_predictions">Прогнозы друзей:</string>
+    <string name="functionality_under_developing">Этот функционал еще разрабатывается</string>
     <string name="loading">Загрузка ...</string>
     <string name="matches">Матчи</string>
     <string name="navigation_drawer_close">Закрыть боковое меню</string>
@@ -57,7 +57,7 @@
     <string name="rules">Правила</string>
     <string name="prompt_username">Имя</string>
     <string name="prompt_password">Пароль</string>
-    <string name="prompt_email">Емейл (для регистрации)</string>
-    <string name="predictions_count_formatted">\"Прогнозы: %1$d\"</string>
+    <string name="prompt_email">Емейл (только для регистрации)</string>
+    <string name="predictions_count_formatted">Прогнозы: %1$d</string>
     <string name="points_formatted">Очки: %1$d</string>
 </resources>
