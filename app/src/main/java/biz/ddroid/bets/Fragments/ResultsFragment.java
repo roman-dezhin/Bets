@@ -95,7 +95,7 @@ public class ResultsFragment extends BaseResultsFragment {
         predictServices = new PredictServices(servicesClient);
         JSONObject filter = new JSONObject();
         try {
-            filter.put(PredictServices.TOURNAMENT_FILTER, 0);
+            filter.put(PredictServices.TOURNAMENT_FILTER, PredictServices.TOURNAMENT_FILTER_ALL);
             filter.put(PredictServices.RESULT_FILTER, getResultsStatus());
         } catch (JSONException e) {
             e.printStackTrace();

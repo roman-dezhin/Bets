@@ -80,7 +80,7 @@ public class StatisticsFragment extends BaseStatisticsFragment {
         predictServices = new PredictServices(servicesClient);
         JSONObject filter = new JSONObject();
         try {
-            filter.put(PredictServices.TOURNAMENT_FILTER, 0);
+            filter.put(PredictServices.TOURNAMENT_FILTER, PredictServices.TOURNAMENT_FILTER_ACTIVE);
             filter.put(PredictServices.RESULT_FILTER, getStatisticsStatus());
         } catch (JSONException e) {
             e.printStackTrace();
