@@ -40,7 +40,7 @@ public class PredictServices {
     public final static String TOURNAMENT_IS_FINISHED = "tournament_is_finished";
     public final static String TOURNAMENT_FILTER = "tournament_status";
     public final static int TOURNAMENT_FILTER_ALL = 2;
-    public final static int TOURNAMENT_FILTER_COMLITED = 1;
+    public final static int TOURNAMENT_FILTER_COMPLETED = 1;
     public final static int TOURNAMENT_FILTER_ACTIVE = 0;
     public final static String RESULT_FILTER = "result_status";
     public final static String STATISTIC_USERNAME = "username";
@@ -51,6 +51,9 @@ public class PredictServices {
     public final static String STATISTIC_PERCENTS = "percents";
     public final static String STATISTIC_WINS = "wins";
     public final static String PAGE = "page";
+    public final static String CHART_TOURNAMENT_ID = "tournament_id";
+    public final static String CHART_RESULT_LABEL = "username";
+    public final static String CHART_RESULT_MATCHES = "matches";
 
     public PredictServices(ServicesClient c) {
         client = c;
@@ -86,5 +89,9 @@ public class PredictServices {
 
     public void statistic(JSONObject params, AsyncHttpResponseHandler responseHandler) {
         client.post("predict/statistic", params, responseHandler);
+    }
+
+    public void chart(JSONObject params, AsyncHttpResponseHandler responseHandler) {
+        client.post("predict/chart", params, responseHandler);
     }
 }
