@@ -1,20 +1,21 @@
 package biz.ddroid.bets.fragments;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -22,8 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
@@ -45,6 +47,7 @@ public class ResultsChartFragment extends DialogFragment {
     private ServicesClient servicesClient;
     private String TAG = "ResultsChartFragment";
     private ArrayList<Integer> colors;
+    private Map<Float, String> matchDateMap = new HashMap<>();
 
     public ResultsChartFragment() {
         // Required empty public constructor
@@ -116,21 +119,24 @@ public class ResultsChartFragment extends DialogFragment {
                 List<Entry> entries = new ArrayList<>();
                 entries.add(new Entry(matches.getJSONObject(0).getInt(PredictServices.MATCH_ID),
                         matches.getJSONObject(0).getInt(PredictServices.POINTS)));
+                matchDateMap.put(entries.get(0).getX(), matches.getJSONObject(0).getString(PredictServices.DATE));
                 for (int j = 1; j < matches.length(); j++) {
                     entries.add(new Entry(matches.getJSONObject(j).getInt(PredictServices.MATCH_ID),
                             matches.getJSONObject(j).getInt(PredictServices.POINTS) + entries.get(j-1).getY()));
+                    matchDateMap.put(entries.get(j).getX(), matches.getJSONObject(j).getString(PredictServices.DATE));
                 }
                 LineDataSet dataSet = new LineDataSet(entries, label);
                 dataSet.setColor(colors.get(i));
                 dataSet.setValueTextColor(colors.get(i));
                 dataSets.add(dataSet);
             }
-            LineData lineData = new LineData(dataSets);
-            chart.setData(lineData);
-            chart.invalidate();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        LineData lineData = new LineData(dataSets);
+        chart.setData(lineData);
+
+        chartStyling();
     }
 
     private void initColors(int n) {
@@ -142,5 +148,27 @@ public class ResultsChartFragment extends DialogFragment {
             color[2] = 0.45f;
             colors.add(HSLToColor(color));
         }
+    }
+
+    private void chartStyling() {
+        Description description = new Description();
+        description.setText("");
+        chart.setDescription(description);
+
+        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                String date = matchDateMap.get(value);
+                if (date != null)
+                    return date.substring(6, 11);
+                else
+                    return "";
+            }
+        };
+        chart.getXAxis().setValueFormatter(formatter);
+        chart.getXAxis().setGranularity(1f);
+
+        chart.setVisibleYRangeMaximum(100, YAxis.AxisDependency.RIGHT);
+        chart.moveViewTo(chart.getXChartMax(), chart.getYChartMax(), YAxis.AxisDependency.RIGHT);
     }
 }
