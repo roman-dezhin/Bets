@@ -21,18 +21,14 @@ import java.util.Map;
 
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
-import biz.ddroid.bets.adapters.ResultsWithFriendsContentAdapter;
 import biz.ddroid.bets.fragments.BaseResultsFragment;
-import biz.ddroid.bets.fragments.CompletedPredictionsFragment;
-import biz.ddroid.bets.fragments.NewPredictionsFragment;
-import biz.ddroid.bets.fragments.PendingPredictionsFragment;
 import biz.ddroid.bets.fragments.ResultsChartFragment;
 import biz.ddroid.bets.fragments.ResultsFragment;
 import biz.ddroid.bets.listener.OnFragmentRefresh;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.SharedPrefs;
 
-public class ResultsActivity extends AppCompatActivity implements OnFragmentRefresh, BaseResultsFragment.OnFragmentInteractionListener{
+public class ResultsActivity extends AppCompatActivity implements OnFragmentRefresh, BaseResultsFragment.OnFragmentInteractionListener {
 
     private Adapter adapter;
     private ViewPager viewPager;
