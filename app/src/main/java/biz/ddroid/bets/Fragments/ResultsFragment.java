@@ -59,10 +59,16 @@ public class ResultsFragment extends BaseResultsFragment {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         if (getResultsStatus() == ResultsActivity.RESULTS_FRIENDS) {
             adapter = new ResultsWithFriendsContentAdapter();
+            adapter.setListener(new BaseResultsRecyclerAdapter.ResultsChartListener() {
+
+                @Override
+                public void onClick(int tourId, String tourTitle) {
+                    onTourSelected(tourId, tourTitle);
+                }
+            });
         } else if (getResultsStatus() == ResultsActivity.RESULTS_WORLD) {
             adapter = new ResultsInWorldContentAdapter();
         }
-
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

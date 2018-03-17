@@ -1,6 +1,7 @@
 package biz.ddroid.bets.activities;
 
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,15 +22,13 @@ import java.util.Map;
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.fragments.BaseResultsFragment;
-import biz.ddroid.bets.fragments.CompletedPredictionsFragment;
-import biz.ddroid.bets.fragments.NewPredictionsFragment;
-import biz.ddroid.bets.fragments.PendingPredictionsFragment;
+import biz.ddroid.bets.fragments.ResultsChartFragment;
 import biz.ddroid.bets.fragments.ResultsFragment;
 import biz.ddroid.bets.listener.OnFragmentRefresh;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.SharedPrefs;
 
-public class ResultsActivity extends AppCompatActivity implements OnFragmentRefresh {
+public class ResultsActivity extends AppCompatActivity implements OnFragmentRefresh, BaseResultsFragment.OnFragmentInteractionListener {
 
     private Adapter adapter;
     private ViewPager viewPager;
@@ -108,6 +107,12 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
         servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
         ResultsFragment resultsFragment = (ResultsFragment) adapter.getFragment(tabId);
         resultsFragment.refreshResults(servicesClient);
+    }
+
+    @Override
+    public void onFragmentInteraction(int tourId, String tourTitle) {
+        DialogFragment newFragment = ResultsChartFragment.newInstance(tourId, tourTitle);
+        newFragment.show(getSupportFragmentManager(), "dialog");
     }
 
     public class Adapter extends FragmentPagerAdapter {

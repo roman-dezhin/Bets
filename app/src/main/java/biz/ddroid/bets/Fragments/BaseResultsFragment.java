@@ -27,6 +27,7 @@ public abstract class BaseResultsFragment extends Fragment {
     protected static final String STATE_REQUEST_TIME = "state_request_time";
 
     private int mResultsStatus;
+    private OnFragmentInteractionListener mListener;
     private OnFragmentRefresh mFragmentRefreshListener;
     protected ArrayList<TournamentResult> results = new ArrayList<>();
     protected PredictServices predictServices;
@@ -63,6 +64,12 @@ public abstract class BaseResultsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof BaseResultsFragment.OnFragmentInteractionListener) {
+            mListener = (BaseResultsFragment.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
         if (context instanceof OnFragmentRefresh) {
             mFragmentRefreshListener = (OnFragmentRefresh) context;
         } else {
@@ -74,7 +81,14 @@ public abstract class BaseResultsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener = null;
         mFragmentRefreshListener = null;
+    }
+
+    public void onTourSelected(int toutId, String tourTitle) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(toutId, tourTitle);
+        }
     }
 
     public void onFragmentRefreshed() {
@@ -107,4 +121,9 @@ public abstract class BaseResultsFragment extends Fragment {
     abstract public void refreshResults(ServicesClient servicesClient);
 
     abstract protected void parseResponse(byte[] responseBody);
+
+    public interface OnFragmentInteractionListener {
+
+        void onFragmentInteraction(int tourId, String tourTitle);
+    }
 }

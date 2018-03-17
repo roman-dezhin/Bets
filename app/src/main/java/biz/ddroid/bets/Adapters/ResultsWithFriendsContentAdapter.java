@@ -1,14 +1,13 @@
 package biz.ddroid.bets.adapters;
 
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -30,9 +29,18 @@ public class ResultsWithFriendsContentAdapter extends BaseResultsRecyclerAdapter
 
     @Override
     public void onBindViewHolder(ResultsWithFriendsContentAdapter.ViewHolder holder, final int position) {
-        TournamentResult result = get(position);
+        final TournamentResult result = get(position);
         holder.tourName.setText(result.getTourName());
 
+        holder.chartButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onClick(result.getTourId(), result.getTourName());
+                }
+            }
+        });
         holder.tableLayout.removeViews(1, holder.tableLayout.getChildCount() - 1);
 
         for (TournamentResultRow row : result.getResults()) {
@@ -69,11 +77,13 @@ public class ResultsWithFriendsContentAdapter extends BaseResultsRecyclerAdapter
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tourName;
+        private ImageButton chartButton;
         private TableLayout tableLayout;
 
         public ViewHolder(CardView v) {
             super(v);
             tourName = (TextView) v.findViewById(R.id.tour_name);
+            chartButton = (ImageButton) v.findViewById(R.id.chart_btn);
             tableLayout = (TableLayout) v.findViewById(R.id.table);
         }
     }

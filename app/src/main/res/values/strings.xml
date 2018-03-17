@@ -69,5 +69,7 @@
     <string name="account_edit_save">Save</string>
     <string name="account_edit_email">Email</string>
     <string name="success_prediction">Success predict</string>
+    <string name="chart_score_formatted">Score %1$d:%2$d</string>
+    <string name="chart_prediction_formatted">Prediction %1$d:%2$d</string>
 
 </resources>
