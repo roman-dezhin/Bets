@@ -112,6 +112,7 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
     @Override
     public void onFragmentInteraction(int tourId, String tourTitle) {
         DialogFragment newFragment = ResultsChartFragment.newInstance(tourId, tourTitle);
+        newFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.ChartDialog);
         newFragment.show(getSupportFragmentManager(), "dialog");
     }
 
