@@ -19,6 +19,16 @@
 
     <style name="ChartDialog" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">false</item>
+        <item name="android:windowTitleStyle">@style/ChartDialogTitle</item>
     </style>
 
+    <style name="ChartDialogTitle">
+        <item name="android:titleTextStyle">@style/ChartDialogTitleTextStyle</item>
+        <item name="android:textColor">@color/cardMatchTourName</item>
+        <item name="android:layout_marginBottom">@dimen/chart_margin</item>
+    </style>
+
+    <style name="ChartDialogTitleTextStyle">
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

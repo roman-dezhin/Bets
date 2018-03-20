@@ -9,5 +9,6 @@
 
     <style name="ChartDialog" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">false</item>
+        <item name="android:windowTitleStyle">@style/ChartDialogTitle</item>
     </style>
 </resources>
