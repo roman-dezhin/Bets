@@ -24,11 +24,14 @@ import biz.ddroid.bets.R;
 import biz.ddroid.bets.fragments.BaseResultsFragment;
 import biz.ddroid.bets.fragments.ResultsChartFragment;
 import biz.ddroid.bets.fragments.ResultsFragment;
+import biz.ddroid.bets.fragments.TournamentFilterFragment;
 import biz.ddroid.bets.listener.OnFragmentRefresh;
+import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.SharedPrefs;
 
-public class ResultsActivity extends AppCompatActivity implements OnFragmentRefresh, BaseResultsFragment.OnFragmentInteractionListener {
+public class ResultsActivity extends AppCompatActivity implements OnFragmentRefresh,
+        BaseResultsFragment.OnFragmentInteractionListener, TournamentFilterFragment.OnFragmentInteractionListener {
 
     private Adapter adapter;
     private ViewPager viewPager;
@@ -45,10 +48,10 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
         if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Setting ViewPager for each Tabs
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
     }
 
@@ -72,11 +75,19 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
         }
 
         if (id == R.id.action_refresh) {
-            Log.v(TAG, "action_refresh: " + viewPager.getCurrentItem());
+            //Log.v(TAG, "action_refresh: " + viewPager.getCurrentItem());
             menuItem = item;
             menuItem.setActionView(R.layout.progressbar);
             menuItem.expandActionView();
             refreshFragmentData(viewPager.getCurrentItem());
+            return true;
+        }
+
+        if (id == R.id.tour_filter) {
+            String filter = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOUR_FILTER, "0");
+
+            DialogFragment newFragment = TournamentFilterFragment.newInstance(Integer.parseInt(filter));
+            newFragment.show(getSupportFragmentManager(), "dialog");
             return true;
         }
 
@@ -114,6 +125,11 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
         DialogFragment newFragment = ResultsChartFragment.newInstance(tourId, tourTitle);
         newFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.ChartDialog);
         newFragment.show(getSupportFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onFragmentInteraction(int filter) {
+        refreshFragmentData(viewPager.getCurrentItem());
     }
 
     public class Adapter extends FragmentPagerAdapter {

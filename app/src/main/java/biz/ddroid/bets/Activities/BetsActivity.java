@@ -72,28 +72,28 @@ public class BetsActivity extends AppCompatActivity
         Log.v(TAG, "onCreate: " + this.toString());
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Setting ViewPager for each Tabs
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         View header = navigationView.getHeaderView(0);
 
-        ImageView header_user_photo = (ImageView) header.findViewById(R.id.navigation_drawer_user_account_picture_profile);
+        ImageView header_user_photo = header.findViewById(R.id.navigation_drawer_user_account_picture_profile);
         String avatarUriString = SharedPrefs.getPref(this, SharedPrefs.AVATAR);
         Bitmap avatarBitmap = BitmapFactory.decodeFile(avatarUriString);
         if (avatarUriString.equals("") || avatarBitmap == null) {
@@ -103,12 +103,12 @@ public class BetsActivity extends AppCompatActivity
             avatarBitmap.recycle();
         }
 
-        TextView header_user_name = (TextView) header.findViewById(R.id.header_username);
+        TextView header_user_name = header.findViewById(R.id.header_username);
         if (header_user_name != null) {
             header_user_name.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
                     .getString(SharedPrefs.USERNAME, "Anonymous"));
         }
-        TextView header_user_email = (TextView) header.findViewById(R.id.header_user_email);
+        TextView header_user_email = header.findViewById(R.id.header_user_email);
         if (header_user_email != null) {
             header_user_email.setText(getSharedPreferences(SharedPrefs.PREFS_NAME, 0)
                     .getString(SharedPrefs.EMAIL, "email@domain.tld"));
@@ -178,7 +178,7 @@ public class BetsActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -234,7 +234,7 @@ public class BetsActivity extends AppCompatActivity
             startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

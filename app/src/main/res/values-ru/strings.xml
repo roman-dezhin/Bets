@@ -53,7 +53,7 @@
     <string name="success_prediction">Прогноз принят</string>
     <string name="statistics">Статистика</string>
     <string name="scores">Счет</string>
-    <string name="results">Результат</string>
+    <string name="results">Результаты</string>
     <string name="rules">Правила</string>
     <string name="prompt_username">Имя</string>
     <string name="prompt_password">Пароль</string>
@@ -62,4 +62,10 @@
     <string name="points_formatted">Очки: %1$d</string>
     <string name="chart_score_formatted">Счет %1$d:%2$d</string>
     <string name="chart_prediction_formatted">Прогноз %1$d:%2$d</string>
+    <string name="refresh">Обновить</string>
+    <string name="tournaments_filter">Фильтр турниров</string>
+    <string name="tour_filter_save">Сохранить</string>
+    <string name="tour_filter_active">Действующие</string>
+    <string name="tour_filter_all">Все</string>
+    <string name="tour_filter_select_text">Выберите турниры для отображения:</string>
 </resources>

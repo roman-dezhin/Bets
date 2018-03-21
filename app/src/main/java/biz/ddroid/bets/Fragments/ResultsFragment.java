@@ -29,6 +29,7 @@ import biz.ddroid.bets.pojo.TournamentResultRow;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.NetworkUtils;
+import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 public class ResultsFragment extends BaseResultsFragment {
@@ -54,9 +55,9 @@ public class ResultsFragment extends BaseResultsFragment {
                              Bundle savedInstanceState) {
         Log.v(TAG, "onCreateView: ");
         View rootView = inflater.inflate(R.layout.fragment_results, container, false);
-        requestDateTime = (TextView) rootView.findViewById(R.id.request_datetime);
-        dataInfo = (TextView) rootView.findViewById(R.id.results_info);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        requestDateTime = rootView.findViewById(R.id.request_datetime);
+        dataInfo = rootView.findViewById(R.id.results_info);
+        recyclerView = rootView.findViewById(R.id.my_recycler_view);
         if (getResultsStatus() == ResultsActivity.RESULTS_FRIENDS) {
             adapter = new ResultsWithFriendsContentAdapter();
             adapter.setListener(new BaseResultsRecyclerAdapter.ResultsChartListener() {
@@ -101,7 +102,7 @@ public class ResultsFragment extends BaseResultsFragment {
         predictServices = new PredictServices(servicesClient);
         JSONObject filter = new JSONObject();
         try {
-            filter.put(PredictServices.TOURNAMENT_FILTER, PredictServices.TOURNAMENT_FILTER_ALL);
+            filter.put(PredictServices.TOURNAMENT_FILTER, SharedPrefs.getPref(getContext(), SharedPrefs.TOUR_FILTER));
             filter.put(PredictServices.RESULT_FILTER, getResultsStatus());
         } catch (JSONException e) {
             e.printStackTrace();

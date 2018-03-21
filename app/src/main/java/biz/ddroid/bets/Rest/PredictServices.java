@@ -39,8 +39,7 @@ public class PredictServices {
     public final static int USER_IS_WINNER = 1;
     public final static String TOURNAMENT_IS_FINISHED = "tournament_is_finished";
     public final static String TOURNAMENT_FILTER = "tournament_status";
-    public final static int TOURNAMENT_FILTER_ALL = 2;
-    public final static int TOURNAMENT_FILTER_COMPLETED = 1;
+    public final static int TOURNAMENT_FILTER_ALL = 1;
     public final static int TOURNAMENT_FILTER_ACTIVE = 0;
     public final static String RESULT_FILTER = "result_status";
     public final static String STATISTIC_USERNAME = "username";
