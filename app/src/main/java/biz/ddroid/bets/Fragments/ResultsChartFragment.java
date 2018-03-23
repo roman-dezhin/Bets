@@ -198,6 +198,9 @@ public class ResultsChartFragment extends DialogFragment implements OnChartValue
 
     private void initColors(int n) {
         colors = new ArrayList<>();
+        if (n == 0) {
+            return;
+        }
         for(int i = 0; i < 360; i += 360 / n) {
             float[] color = new float[3];
             color[0] = i*1.0f;
