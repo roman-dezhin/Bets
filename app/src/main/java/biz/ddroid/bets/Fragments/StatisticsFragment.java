@@ -25,6 +25,7 @@ import biz.ddroid.bets.pojo.Statistic;
 import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.NetworkUtils;
+import biz.ddroid.bets.utils.SharedPrefs;
 import cz.msebera.android.httpclient.Header;
 
 public class StatisticsFragment extends BaseStatisticsFragment {
@@ -80,7 +81,7 @@ public class StatisticsFragment extends BaseStatisticsFragment {
         predictServices = new PredictServices(servicesClient);
         JSONObject filter = new JSONObject();
         try {
-            filter.put(PredictServices.TOURNAMENT_FILTER, PredictServices.TOURNAMENT_FILTER_ACTIVE);
+            filter.put(PredictServices.TOURNAMENT_FILTER, SharedPrefs.getPref(getContext(), SharedPrefs.TOUR_FILTER_STATISTICS));
             filter.put(PredictServices.RESULT_FILTER, getStatisticsStatus());
         } catch (JSONException e) {
             e.printStackTrace();

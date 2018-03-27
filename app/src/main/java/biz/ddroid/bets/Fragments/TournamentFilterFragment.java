@@ -1,10 +1,8 @@
 package biz.ddroid.bets.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +77,6 @@ public class TournamentFilterFragment extends DialogFragment {
         save_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPrefs.setPref(getActivity(), SharedPrefs.TOUR_FILTER, Integer.toString(mFilter));
                 onButtonPressed(mFilter);
             }
         });

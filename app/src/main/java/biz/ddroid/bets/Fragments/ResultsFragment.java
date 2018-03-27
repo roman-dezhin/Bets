@@ -2,12 +2,10 @@ package biz.ddroid.bets.fragments;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -102,7 +100,7 @@ public class ResultsFragment extends BaseResultsFragment {
         predictServices = new PredictServices(servicesClient);
         JSONObject filter = new JSONObject();
         try {
-            filter.put(PredictServices.TOURNAMENT_FILTER, SharedPrefs.getPref(getContext(), SharedPrefs.TOUR_FILTER));
+            filter.put(PredictServices.TOURNAMENT_FILTER, SharedPrefs.getPref(getContext(), SharedPrefs.TOUR_FILTER_RESULTS));
             filter.put(PredictServices.RESULT_FILTER, getResultsStatus());
         } catch (JSONException e) {
             e.printStackTrace();

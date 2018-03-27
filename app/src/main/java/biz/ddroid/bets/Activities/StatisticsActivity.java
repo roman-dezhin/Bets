@@ -2,6 +2,7 @@ package biz.ddroid.bets.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,11 +22,12 @@ import java.util.Map;
 import biz.ddroid.bets.BetApplication;
 import biz.ddroid.bets.R;
 import biz.ddroid.bets.fragments.StatisticsFragment;
+import biz.ddroid.bets.fragments.TournamentFilterFragment;
 import biz.ddroid.bets.listener.OnFragmentRefresh;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.SharedPrefs;
 
-public class StatisticsActivity extends AppCompatActivity implements OnFragmentRefresh {
+public class StatisticsActivity extends AppCompatActivity implements OnFragmentRefresh, TournamentFilterFragment.OnFragmentInteractionListener {
 
     private Adapter adapter;
     private ViewPager viewPager;
@@ -77,6 +79,14 @@ public class StatisticsActivity extends AppCompatActivity implements OnFragmentR
             return true;
         }
 
+        if (id == R.id.tour_filter) {
+            String filter = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOUR_FILTER_STATISTICS, "0");
+
+            DialogFragment newFragment = TournamentFilterFragment.newInstance(Integer.parseInt(filter));
+            newFragment.show(getSupportFragmentManager(), "dialog");
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -104,6 +114,12 @@ public class StatisticsActivity extends AppCompatActivity implements OnFragmentR
         servicesClient.setToken(getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOKEN, ""));
         StatisticsFragment statisticsFragment = (StatisticsFragment) adapter.getFragment(tabId);
         statisticsFragment.refreshResults(servicesClient);
+    }
+
+    @Override
+    public void onFragmentInteraction(int filter) {
+        SharedPrefs.setPref(getApplicationContext(), SharedPrefs.TOUR_FILTER_STATISTICS, Integer.toString(filter));
+        refreshFragmentData(viewPager.getCurrentItem());
     }
 
     public class Adapter extends FragmentPagerAdapter {

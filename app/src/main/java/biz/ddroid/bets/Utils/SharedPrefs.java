@@ -12,7 +12,9 @@ public class SharedPrefs {
     public static final String EMAIL = "Email";
     public static final String AVATAR = "Avatar";
     public static final String AVATAR_FILE_ID = "AvatarFileId";
-    public static final String TOUR_FILTER = "TourFilter";
+    public static final String TOUR_FILTER_RESULTS = "TourFilterResults";
+    public static final String TOUR_FILTER_STATISTICS = "TourFilterStatistics";
+
 
     public static void setPref(Context context, String name, String value) {
         SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);

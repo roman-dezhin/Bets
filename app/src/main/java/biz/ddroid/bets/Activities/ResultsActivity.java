@@ -26,7 +26,6 @@ import biz.ddroid.bets.fragments.ResultsChartFragment;
 import biz.ddroid.bets.fragments.ResultsFragment;
 import biz.ddroid.bets.fragments.TournamentFilterFragment;
 import biz.ddroid.bets.listener.OnFragmentRefresh;
-import biz.ddroid.bets.rest.PredictServices;
 import biz.ddroid.bets.rest.ServicesClient;
 import biz.ddroid.bets.utils.SharedPrefs;
 
@@ -84,7 +83,7 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
         }
 
         if (id == R.id.tour_filter) {
-            String filter = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOUR_FILTER, "0");
+            String filter = getSharedPreferences(SharedPrefs.PREFS_NAME, 0).getString(SharedPrefs.TOUR_FILTER_RESULTS, "0");
 
             DialogFragment newFragment = TournamentFilterFragment.newInstance(Integer.parseInt(filter));
             newFragment.show(getSupportFragmentManager(), "dialog");
@@ -129,6 +128,7 @@ public class ResultsActivity extends AppCompatActivity implements OnFragmentRefr
 
     @Override
     public void onFragmentInteraction(int filter) {
+        SharedPrefs.setPref(getApplicationContext(), SharedPrefs.TOUR_FILTER_RESULTS, Integer.toString(filter));
         refreshFragmentData(viewPager.getCurrentItem());
     }
 
