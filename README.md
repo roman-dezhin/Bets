@@ -14,5 +14,5 @@ New version will be [here](https://github.com/roman-dezhin/FootballPredicts).
 * MPAndroidChart
 
 ### Screnshots
-![](Screenshot_1.jpg) ![](Screenshot_2.jpg) ![](Screenshot_3.jpg) 
-![](Screenshot_4.jpg) ![](Screenshot_5.jpg) ![](Screenshot_6.jpg)
+![](Screenshots/Screenshot_1.jpg) ![](Screenshots/Screenshot_2.jpg) ![](Screenshots/Screenshot_3.jpg) 
+![](Screenshots/Screenshot_4.jpg) ![](Screenshots/Screenshot_5.jpg) ![](Screenshots/Screenshot_6.jpg)
